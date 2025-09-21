@@ -8,7 +8,7 @@
       body {
           font-family: 'Cinzel Decorative', serif;
           margin: 0; padding: 0;
-          background: url('hogwarts-bg.jpg') no-repeat center center fixed;
+          background: url('1.jpg') no-repeat center center fixed;
           background-size: cover;
           height: 100vh; display: flex; justify-content: center; align-items: center;
       }
@@ -55,7 +55,7 @@
         if(response.ok){
             msg.style.color = '#00FF00';
             msg.innerText = 'Signup Successful! Redirecting...';
-            setTimeout(()=>{ window.location.href = 'teacher-login.html'; }, 1500);
+            setTimeout(()=>{ window.location.href = 'teacher_dashboard.html'; }, 1500);
         } else {
             msg.style.color = '#FF3333';
             msg.innerText = data.error;
