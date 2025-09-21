@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hogwarts Portal</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Cinzel Decorative', serif;
+      background: black;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative; /* key: children use absolute positioning */
+      width: 100%;
+      height: 100vh;
+      background: url("WhatsApp Image 2025-09-20 at 20.27.23_adecb620.jpg") no-repeat center center/cover;
+    }
+
+    .gate {
+      position: absolute; /* now can use top/left */
+      text-align: center;
+      color: white;
+      text-shadow: 0 0 8px #000;
+    }
+
+    .gate a {
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .gate a:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+    }
+
+    /* Gate-specific glow colors */
+    .yellow .icon {
+      background: rgba(255, 215, 0, 0.2);
+      border: 3px solid #FFD700;
+      box-shadow: 0 0 20px #FFD700;
+    }
+    .orange .icon {
+      background: rgba(255, 100, 0, 0.2);
+      border: 3px solid #FF4500;
+      box-shadow: 0 0 20px #FF6347;
+    }
+    .blue .icon {
+      background: rgba(0, 120, 255, 0.2);
+      border: 3px solid #00BFFF;
+      box-shadow: 0 0 20px #1E90FF;
+    }
+    .green .icon {
+      background: rgba(0, 180, 100, 0.2);
+      border: 3px solid #32CD32;
+      box-shadow: 0 0 20px #00FF7F;
+    }
+
+    .label {
+      font-size: 1.4rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid gold;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: inline-block;
+      box-shadow: 0 0 12px gold;
+    }
+
+    /* Position each gate manually (adjust these values) */
+    .yellow { top: 70%; left: 2.5%; }
+    .orange { top: 70%; left: 23%; }
+    .blue   { top: 70%; left: 63%; }
+    .green  { top: 70%; left: 86%; }
+
+    .profile {
+  position: absolute;   /* lets you place it freely */
+  top: 20px;            /* distance from top */
+  left: 78%;
+  right: 20px;          /* distance from right */
+  z-index: 10;          /* stays above videos/elements */
+}
+
+.profile img {
+  width: 60px;          /* adjust size */
+  height: 60px;
+  border-radius: 50%;   /* makes it circular */
+  border: 2px solid gold;
+  box-shadow: 0 0 12px gold;
+  cursor: pointer;      /* clickable */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile img:hover {
+  transform: scale(1.1);                 /* zoom effect */
+  box-shadow: 0 0 20px 6px goldenrod;    /* glow on hover */
+}
+
+.logo{
+  position: absolute;   /* lets you place it freely */
+  top: 20px;            /* distance from top */
+  left: 20%;
+  right: 20px;          /* distance from right */
+  z-index: 10;  
+}
+
+.logo img {
+  width: 60px;          /* adjust size */
+  height: 60px;
+  border-radius: 50%;   /* makes it circular */
+  border: 2px solid gold;
+  box-shadow: 0 0 12px gold;
+  cursor: pointer;      /* clickable */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo img:hover {
+  transform: scale(1.1);                 /* zoom effect */
+  box-shadow: 0 0 20px 6px goldenrod;    /* glow on hover */
+}
+
+
+.HEADING {
+  position: absolute;       /* allows free placement */
+  top: 10px;                /* distance from the top */
+  left: 50%;                /* horizontally center */
+  transform: translateX(-50%); /* perfect centering */
+  color: gold;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px black, 0 0 20px goldenrod;
+  z-index: 9;               /* stays below profile (which is 10) */
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Yellow Gate: Attendance -->
+    <div class="gate yellow">
+      <a href="studentattendance.html">
+        <div class="icon">📜
+</div>
+        <div class="label">Attendance</div>
+      </a>
+    </div>
+
+    <!-- Orange Gate: My Learning -->
+    <!-- Orange Gate: My Learning -->
+<div class="gate orange">
+  <a href="class6-12.html">
+    <div class="icon">📖</div>
+    <div class="label">My Learning</div>
+  </a>
+</div>
+
+
+    <!-- Blue Gate: Marks View -->
+    <div class="gate blue">
+      <a href="studentmarksview.html">
+        <div class="icon">🔮</div>
+        <div class="label">Marks View</div>
+      </a>
+    </div>
+
+    <!-- Green Gate: Notifications -->
+    <div class="gate green">
+      <a href="notification.html">
+        <div class="icon">🦉</div>
+        <div class="label">Notifications</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="profile">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg78gclkIOHCpq_rczLdDJhlFBXYXjkJ2L06IG5fmjjqdukQuatvKT0-nOjTWWHPPVf-w&usqp=CAU">
+  </div>
+
+  <div class="HEADING">
+    <H1>GYAN MANTRA</H1>
+  </div>
+
+  <div class="logo">
+    <img src="Gemini_Generated_Image_gvqjlegvqjlegvqj.png">
+  </div>
+
+</body>
+</html>

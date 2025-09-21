@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧙‍♂️ Hogwarts Dark Chemistry: Acids, Bases & Salts ⚗️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* --- Reset and Variables --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --dark-bg: #0a0a0a; --darker-bg: #1a1a1a; --card-bg: rgba(30,30,30,0.8);
+      --hogwarts-gold: #d4af37; --magic-purple: #8a2be2; --enchanted-green: #32cd32;
+      --potion-red: #dc143c; --mystical-blue: #4169e1; --text-light: #e0e0e0;
+      --text-gold: #ffd700; --border-dark: #333; --shadow-deep: rgba(0,0,0,0.8);
+    }
+
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: var(--dark-bg);
+      color: var(--text-light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Navbar */
+    nav {
+      background: rgba(26,26,26,0.95);
+      padding: 1.2rem 2rem;
+      position: fixed; width:100%; top:0; z-index:1000;
+      border-bottom: 3px solid var(--hogwarts-gold);
+      box-shadow: 0 8px 25px var(--shadow-deep);
+    }
+    .nav-container { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; }
+    .logo { font-family:'Cinzel', serif; font-size:1.8rem; font-weight:bold; color:var(--hogwarts-gold); cursor:pointer; }
+    .back-btn { display:none; padding:0.6rem 1.5rem; border-radius:30px; background:var(--card-bg); color:var(--text-gold); border:2px solid var(--hogwarts-gold); cursor:pointer; }
+    .back-btn.show { display:block; }
+
+    .container { max-width:1200px; margin:0 auto; padding:7rem 2rem 2rem; }
+
+    /* Hero Section */
+    .hero { text-align:center; padding:3rem 0; }
+    .hero h1 { font-family:'Cinzel', serif; font-size:3rem; margin-bottom:1rem; color:var(--hogwarts-gold); }
+    .hero p { font-size:1.3rem; }
+
+    /* Topics Grid */
+    .topics-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; margin-top:4rem; }
+    .topic-card {
+      background:var(--card-bg); border:3px solid var(--border-dark); border-radius:20px;
+      padding:2rem; text-align:center; cursor:pointer;
+    }
+    .topic-card:hover { transform:translateY(-8px); background:rgba(50,50,50,0.9); }
+
+    /* Topic Detail */
+    .topic-detail { display:none; }
+    .topic-detail.active { display:block; }
+    .detail-header { text-align:center; padding:2rem; margin-bottom:2rem; background:var(--card-bg); border-radius:20px; }
+    .detail-header h2 { font-family:'Cinzel', serif; font-size:2rem; color:var(--hogwarts-gold); }
+
+    /* Options */
+    .options-container { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; max-width:800px; margin:0 auto; }
+    .option-card { background:var(--card-bg); border:3px solid var(--border-dark); border-radius:20px; padding:2rem; text-align:center; }
+    .option-btn { display:inline-block; margin-top:1rem; padding:0.8rem 2rem; background:var(--darker-bg); color:var(--text-gold); border-radius:30px; border:2px solid var(--hogwarts-gold); text-decoration:none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="logo" onclick="goHome()">🏰 Dark Hogwarts Chemistry ⚗️</div>
+      <button class="back-btn" id="backBtn" onclick="goBack()">🪄 Back to Lessons</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Main View -->
+    <div class="main-view" id="mainView">
+      <section class="hero">
+        <h1>🧙‍♂️ Acids, Bases and Salts ⚗️</h1>
+        <p>Welcome to the dark corridors of Professor Snape's dungeon! 🌙</p>
+      </section>
+
+      <section id="topics">
+        <div class="topics-grid">
+          <div class="topic-card" onclick="showTopicDetail('acids','Acids')"><h3>Acids</h3></div>
+          <div class="topic-card" onclick="showTopicDetail('bases','Bases')"><h3>Bases</h3></div>
+          <div class="topic-card" onclick="showTopicDetail('salts','Salts')"><h3>Salts</h3></div>
+          <div class="topic-card" onclick="showTopicDetail('quiz','Dark Chemistry Quiz')"><h3>Quiz</h3></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Detail View -->
+    <div class="topic-detail" id="topicDetail">
+      <div class="detail-header">
+        <h2 id="topicTitle">Topic Name</h2>
+        <p>Choose your path in magical chemistry! 🕯️</p>
+      </div>
+      <div class="options-container">
+        <div class="option-card">
+          <h3>Theory</h3>
+          <a href="#" class="option-btn" id="theoryBtn">📜 Open Grimoire</a>
+        </div>
+        <div class="option-card" id="practicalCard">
+          <h3>Practical</h3>
+          <a href="#" class="option-btn" id="practicalBtn">⚗️ Enter Dungeon</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function showTopicDetail(id, title) {
+      // Hide main view
+      document.getElementById("mainView").style.display = "none";
+      // Show detail view
+      document.getElementById("topicDetail").classList.add("active");
+      document.getElementById("topicTitle").innerText = title;
+
+      // Reset defaults
+      document.getElementById("practicalCard").style.display = "block";
+      document.getElementById("theoryBtn").innerText = "📜 Open Grimoire";
+
+      // Assign links based on topic
+      if (id === "quiz") {
+        document.getElementById("theoryBtn").href = "chemquiz.html"; 
+        document.getElementById("theoryBtn").innerText = "📝 Start Quiz";
+        document.getElementById("practicalCard").style.display = "none";
+      } else {
+        document.getElementById("theoryBtn").href = "chemistry.html";
+        document.getElementById("practicalBtn").href = "lab.html";
+      }
+
+      // Show back button
+      document.getElementById("backBtn").classList.add("show");
+    }
+
+    function goBack() {
+      document.getElementById("mainView").style.display = "block";
+      document.getElementById("topicDetail").classList.remove("active");
+      document.getElementById("backBtn").classList.remove("show");
+    }
+
+    function goHome() {
+      window.location.href = "index.html"; // or your home page
+    }
+  </script>
+</body>
+</html>

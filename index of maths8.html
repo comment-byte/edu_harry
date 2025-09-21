@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Of Physics</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .title {
+            font-family: Brush Script MT, cursive; 
+            color: black;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;  
+            align-items: center;      
+            height: 100px;            
+            width: 200px;             
+            border: 2px solid black;  
+            margin: 20px auto; /* centers horizontally on page */
+            background: white;  /* so text is always visible */
+        }
+
+        /* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("Title Here.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #c6a47f;
+    height: 100vh;
+    font-family: Brush Script MT;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2); /* semi-transparent */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    backdrop-filter: blur(6px); /* glass effect */
+}
+
+/* Left and Right Sections */
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Title (absolute center) */
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+
+}
+
+.nav-center h1 {
+    font-size: 35px;
+    color: #2c1a07;
+    letter-spacing: 2px;
+}
+
+/* Icons */
+.nav-icon {
+    color: #2c1a07;
+    font-size: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-icon:hover {
+    color: #d4a017; /* gold highlight on hover */
+}
+
+/* Progress */
+.progress {
+    font-size: 16px;
+    color: #2c1a07;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.progress i {
+    color: #d4a017; /* gold star */
+}
+
+/* Levels container */
+.levels {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Level circles */
+.level {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 42px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+/* States */
+.level.passed {
+    background-color: #1a43bf; /* green */
+    
+}
+.level.current {
+    background-color: #74c365; /* purple */
+}
+.level.locked {
+    background-color: #7f8c8d; /* grey */
+}
+
+/* Hover effect */
+.level:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.level-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column; /* stack circle + text vertically */
+    align-items: center;    /* center horizontally */
+    transform: translate(-50%, -50%); /* center container at the top/left position */
+}
+
+.level-text {
+    margin-top: 6px;       /* space below circle */
+    font-size: 30px;
+    color: #2c1a07;
+    text-align: center;
+    font-family: Brush Script MT;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    pointer-events: none;   /* so text doesn't block circle clicks */
+}
+
+.title {
+    font-family: Brush Script MT, cursive; 
+    color: black; /* change to black for visibility */
+    font-size: 25px;
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    height: 100px;            
+    width: 200px;             
+    border: 1px solid black;  
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <!-- Left -->
+        <div class="nav-left">
+            <a href="#" class="nav-icon"><i class="fas fa-home"></i></a>
+        </div>
+
+        <!-- Center (absolute) -->
+        <div class="nav-center">
+            <h1>Chapters</h1>
+        </div>
+
+        <!-- Right -->
+        <div class="nav-right">
+            <span class="progress"><i class="fas fa-star"></i> 4 / 10</span>
+            <a href="#" class="nav-icon"><i class="fas fa-cog"></i></a>
+        </div>
+    </nav>
+
+    <!-- Levels on footsteps -->
+    <div class="levels">
+        <div class="level-container" style="top: 20%; left: 18%;">
+            <div class="level passed">1</div>
+            <span class="level-text">Rational Numbers</span>
+        </div>
+
+        <div class="level-container" style="top: 42%; left: 12%;">
+            <div class="level passed">2</div>
+            <span class="level-text">Linear Equations in One Variable</span>
+        </div>
+
+        <div class="level-container" style="top: 58%; left: 27%;">
+            <div class="level passed">3</div>
+            <span class="level-text">Practical Geometry</span>
+        </div>
+
+        <div class="level-container" style="top: 84%; left: 25%;">
+            <div class="level passed">4</div>
+            <span class="level-text">Cubes and Cube Roots</span>
+        </div>
+
+        <div class="level-container" style="top: 95%; left: 48%;">
+            <div class="level passed">5</div>
+            <span class="level-text">Exponents and Powers</span>
+        </div>
+
+        <div class="level-container" style="top: 90%; left: 69%;">
+            <div class="level passed">6</div>
+            <span class="level-text">Data Handling</span>
+        </div>
+
+        <div class="level-container" style="top: 67%; left: 72%;">
+            <a href="maths_subtopic8 .html" style="text-decoration: none; color: inherit;">
+            <div class="level current">7</div>
+            <span class="level-text">Mensuration</span>
+        </a>
+        </div>
+
+        <div class="level-container" style="top: 48%; left: 87%;">
+            <div class="level locked">8</div>
+            <span class="level-text">Algebraic Expressions and Identities</span>
+        </div>
+
+        <div class="level-container" style="top: 20%; left: 82%;">
+            <div class="level locked">9</div>
+            <span class="level-text">Introduction to Graphs</span>
+        </div>
+    </div>
+
+    <!-- Title -->
+    <div class="title">Maths</div>
+
+</body>
+</html>

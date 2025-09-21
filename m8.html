@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pythagorean Parchment - A Magical Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=MedievalSharp&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Black and Violet Theme */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(25, 0, 51, 0.8)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            color: #e0d8ff;
+            /* Light lavender text for body */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .title {
+            font-family: 'IM Fell English SC', serif;
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #9d4edd, #c77dff);
+            /* Shimmering Violet */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+            text-shadow: 0 0 10px rgba(157, 78, 221, 0.6);
+        }
+
+        .header p {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.2rem;
+            color: #c77dff;
+            letter-spacing: 1px;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 5px #9d4edd);
+            }
+
+            to {
+                filter: drop-shadow(0 0 20px #e0c3fc);
+            }
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .score-item {
+            background: rgba(25, 0, 51, 0.3);
+            border: 2px solid #7b2cbf;
+            border-radius: 15px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 0 15px rgba(123, 44, 191, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e0d8ff;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: linear-gradient(45deg, #240046, #10002b);
+            /* Dark violet tones */
+            border: 2px solid #5a189a;
+            color: #e0d8ff;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'IM Fell English SC', serif;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .tab-button:hover {
+            transform: scale(1.05);
+            border-color: #9d4edd;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, #7b2cbf, #c77dff);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.7);
+            color: white;
+            border: 2px solid #e0d8ff;
+        }
+
+        .content-section {
+            display: none;
+            background: url('https://www.transparenttextures.com/patterns/dark-matter.png'), linear-gradient(135deg, #1b0034, #240046);
+            color: #e0d8ff;
+            /* Light lavender ink */
+            border-radius: 10px;
+            padding: 30px;
+            border: 4px double #7b2cbf;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section h2 {
+            font-family: 'IM Fell English SC', serif;
+            color: #c77dff;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content-section h3 {
+            color: #c77dff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-family: 'MedievalSharp', cursive;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+            align-items: start;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b792e8;
+            font-weight: bold;
+            font-family: 'MedievalSharp', cursive;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #5a189a;
+            border-radius: 8px;
+            color: #e0d8ff;
+            font-size: 1rem;
+            font-family: Georgia, 'Times New Roman', serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #9d4edd;
+            box-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
+        }
+
+        .calculate-btn,
+        .check-btn {
+            background: linear-gradient(45deg, #5a189a, #9d4edd);
+            border: 2px outset #3c096c;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: 'IM Fell English SC', serif;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .calculate-btn:hover,
+        .check-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(45deg, #9d4edd, #5a189a);
+            box-shadow: 0 10px 20px rgba(90, 24, 154, 0.5);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result.correct {
+            background: rgba(157, 78, 221, 0.15);
+            border: 2px solid #9d4edd;
+            color: #e0c3fc;
+        }
+
+        .result.incorrect {
+            background: rgba(204, 51, 139, 0.15);
+            border: 2px solid #cc338b;
+            color: #ff69b4;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quiz-option {
+            background: rgba(42, 0, 84, 0.3);
+            border: 2px solid rgba(90, 24, 154, 0.4);
+            color: #e0d8ff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #9d4edd;
+            background: rgba(157, 78, 221, 0.1);
+        }
+
+        .quiz-option.selected {
+            border-color: #c77dff;
+            background: rgba(199, 125, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        .formula-display {
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #c77dff;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'IM Fell English SC', serif;
+            border: 2px solid #7b2cbf;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px #9d4edd;
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 25px #9d4edd;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 1px solid #5a189a;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7b2cbf, #c77dff);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+            width: 0%;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--color);
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            opacity: 0;
+            animation: explode 0.7s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--x), var(--y)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* --- STARS AND SPARKLES --- */
+        .star {
+            position: absolute;
+            color: #c77dff;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #e0d8ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes sparkle-dance {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) rotate(0deg) scale(0);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(10px, -10px) rotate(90deg) scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: translate(-5px, -15px) rotate(180deg) scale(1.2);
+            }
+
+            80% {
+                opacity: 1;
+                transform: translate(8px, -20px) rotate(270deg) scale(0.8);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(0, -25px) rotate(360deg) scale(0);
+            }
+        }
+
+        .star.animate {
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        .sparkle.animate {
+            animation: sparkle-dance 3s ease-in-out infinite;
+        }
+
+        /* --- STYLES FOR ANIMATION --- */
+        .proof-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid rgba(90, 24, 154, 0.3);
+        }
+
+        .proof-svg {
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .proof-svg .triangle {
+            fill: rgba(123, 44, 191, 0.6);
+            stroke: #7b2cbf;
+            stroke-width: 1;
+            transition: transform 1s ease-in-out;
+        }
+
+        .proof-svg .label {
+            font-family: Georgia, serif;
+            font-size: 14px;
+            font-weight: bold;
+            fill: #e0d8ff;
+            text-anchor: middle;
+        }
+
+        .proof-svg .guide-square {
+            fill: rgba(157, 78, 221, 0.3);
+            stroke: #9d4edd;
+            stroke-dasharray: 2;
+        }
+
+        #tri1 {
+            animation: move-tri1 10s infinite ease-in-out;
+        }
+
+        #tri2 {
+            animation: move-tri2 10s infinite ease-in-out;
+        }
+
+        #tri3 {
+            animation: move-tri3 10s infinite ease-in-out;
+        }
+
+        #tri4 {
+            animation: move-tri4 10s infinite ease-in-out;
+        }
+
+        #label-c,
+        #label-a,
+        #label-b {
+            animation: fade-labels 10s infinite ease-in-out;
+        }
+
+        #label-a,
+        #label-b {
+            animation-delay: -5s;
+        }
+
+        @keyframes move-tri1 {
+
+            0%,
+            40%,
+            100% {
+                transform: translate(60px, 0px);
+            }
+
+            60%,
+            90% {
+                transform: translate(80px, 0px) rotate(-90deg);
+            }
+        }
+
+        @keyframes move-tri2 {
+
+            0%,
+            40%,
+            100% {
+                transform: translate(140px, 60px) rotate(90deg);
+            }
+
+            60%,
+            90% {
+                transform: translate(80px, 60px) rotate(0deg);
+            }
+        }
+
+        @keyframes move-tri3 {
+
+            0%,
+            40%,
+            100% {
+                transform: translate(80px, 140px) rotate(180deg);
+            }
+
+            60%,
+            90% {
+                transform: translate(0px, 140px) rotate(180deg);
+            }
+        }
+
+        @keyframes move-tri4 {
+
+            0%,
+            40%,
+            100% {
+                transform: translate(0px, 80px) rotate(270deg);
+            }
+
+            60%,
+            90% {
+                transform: translate(0px, 80px) rotate(180deg);
+            }
+        }
+
+        @keyframes fade-labels {
+
+            0%,
+            40% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            60%,
+            90% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* --- END OF STYLES --- */
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .score-board {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">✨ The Pythagorean Parchment ✨</h1>
+            <p>Uncover the secrets of the ancient theorem!</p>
+        </div>
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-value" id="score">0</div>
+                <div>Points</div>
+            </div>
+            <div class="score-item">
+                <div class="score-value" id="level">1</div>
+                <div>Level</div>
+            </div>
+            <div class="score-item">
+                <div class="score-value" id="streak">0</div>
+                <div>Streak</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('theory', event)">📜 The Scroll of Theory</button>
+            <button class="tab-button" onclick="showTab('calculator', event)">🖋️ Quill of Calculation</button>
+            <button class="tab-button" onclick="showTab('quiz', event)">🏆 The Triwizard Quiz</button>
+            <button class="tab-button" onclick="showTab('challenge', event)">⚡ The Lightning Round</button>
+        </div>
+        <div id="theory" class="content-section active">
+            <h2>🔬 The Pythagorean Theorem</h2>
+            <div class="formula-display">a² + b² = c²</div>
+            <p style="font-size: 1.1rem; line-height: 1.6;">
+                The Pythagorean theorem states that in a **right-angled triangle**, the square of the length of the
+                hypotenuse (the side opposite the right angle, denoted as 'c') is equal to the sum of the squares of the
+                other two sides (the legs, 'a' and 'b').
+            </p>
+            <h3>- Magical Triples</h3>
+            <p>A Pythagorean triple consists of three positive integers a, b, and c, such that a² + b² = c². These are
+                triangles with sides of whole number lengths. Common examples include:</p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>(3, 4, 5) &rarr; 3² + 4² = 9 + 16 = 25 = 5²</li>
+                <li>(5, 12, 13) &rarr; 5² + 12² = 25 + 144 = 169 = 13²</li>
+                <li>(8, 15, 17) &rarr; 8² + 15² = 64 + 225 = 289 = 17²</li>
+            </ul>
+            <h3>- Converse of the Theorem</h3>
+            <p>The converse is also true. You can use it to test if a triangle is a right triangle:</p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>If a² + b² = c², the triangle is a **right** triangle.</li>
+                <li>If a² + b² > c², the triangle is an **acute** triangle.</li>
+                <li>If a² + b² < c², the triangle is an **obtuse** triangle.</li>
+            </ul>
+            <h3>- A Visual Enchantment</h3>
+            <p>💡 Here's a clever visual proof! It uses four matching right-angled triangles 📐. As you watch them move
+                🔄, notice the empty space. First, this space forms one big square with an area of $c^2$ (from the
+                longest side). Then, the triangles rearrange, and the *exact same amount of space* forms two smaller
+                squares with areas of $a^2$ and $b^2$. This visually proves that $a^2 + b^2 = c^2$!</p>
+            <div class="proof-container">
+                <svg viewBox="0 0 140 140" class="proof-svg">
+                    <rect x="0" y="0" width="80" height="80" class="guide-square" id="label-b"></rect>
+                    <rect x="80" y="80" width="60" height="60" class="guide-square" id="label-a"></rect>
+                    <polygon id="tri1" points="0,0 80,0 0,60" class="triangle"></polygon>
+                    <polygon id="tri2" points="0,0 80,0 0,60" class="triangle"></polygon>
+                    <polygon id="tri3" points="0,0 80,0 0,60" class="triangle"></polygon>
+                    <polygon id="tri4" points="0,0 80,0 0,60" class="triangle"></polygon>
+                    <text x="70" y="75" class="label" id="label-c">c²</text>
+                    <text x="40" y="45" class="label" id="label-b">b²</text>
+                    <text x="110" y="115" class="label" id="label-a">a²</text>
+                </svg>
+            </div>
+        </div>
+        <div id="calculator" class="content-section">
+            <h2>🖋️ Interactive Pythagorean Calculator</h2>
+            <div class="game-area">
+                <div>
+                    <h3>Triangle Builder</h3>
+                    <div class="input-group"><label>Side A:</label><input type="number" id="sideA"
+                            placeholder="Enter length of side a"></div>
+                    <div class="input-group"><label>Side B:</label><input type="number" id="sideB"
+                            placeholder="Enter length of side b"></div>
+                    <div class="input-group"><label>Hypotenuse C:</label><input type="number" id="sideC"
+                            placeholder="Enter length of hypotenuse c"></div>
+                    <button class="calculate-btn" onclick="calculateHypotenuse()">⚡ Calculate Hypotenuse (c)</button>
+                    <button class="calculate-btn" onclick="calculateSide()" style="margin-top: 10px;">📐 Find Missing
+                        Side (a or b)</button>
+                    <div id="calculatorResult" class="result"></div>
+                </div>
+                <div>
+                    <h3>Visual Triangle</h3>
+                    <canvas id="triangleCanvas" width="300" height="300"
+                        style="border: 2px solid #5a189a; border-radius: 10px; background: rgba(0,0,0,0.2);"></canvas>
+                    <p style="text-align: center; margin-top: 15px; color: #c77dff;">Triangle updates as you calculate!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="quiz" class="content-section">
+            <h2>🏆 The Triwizard Quiz</h2>
+            <div class="quiz-section" id="quizBox">
+                <div class="quiz-question" id="quizQuestion">
+                    <h3>Loading your first question...</h3>
+                </div>
+                <div class="quiz-options" id="quizOptions"></div>
+                <button class="check-btn" onclick="checkAnswer()">Submit Answer</button>
+                <div id="quizResult" class="result"></div>
+            </div>
+            <button class="calculate-btn" onclick="generateQuizQuestion()" style="margin-top: 20px;">🔄 New
+                Question</button>
+        </div>
+        <div id="challenge" class="content-section">
+            <h2>⚡ The Lightning Round</h2>
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="font-size: 1.5rem; margin-bottom: 20px;">
+                    Time Remaining: <span id="timeLeft" style="color: #ff69b4; font-weight: bold;">60</span>s
+                </div>
+            </div>
+            <div class="quiz-section" id="challengeBox">
+                <div class="quiz-question" id="challengeQuestion">
+                    <h3>Get ready for the speed challenge!</h3>
+                </div>
+                <div class="input-group">
+                    <label>Your Answer (to 1 decimal place):</label>
+                    <input type="number" id="challengeAnswer" placeholder="Type your answer quickly!" disabled>
+                </div>
+                <button class="check-btn" onclick="submitChallenge()" id="submitChallenge">⚡ Submit</button>
+                <div id="challengeResult" class="result"></div>
+            </div>
+            <button class="calculate-btn" onclick="startChallenge()" id="startChallengeBtn">🚀 Start Challenge</button>
+        </div>
+    </div>
+    <script>
+        // Create floating stars and sparkles
+        function createFloatingStars() {
+            const container = document.body;
+            const starSymbols = ['✦', '✧', '⭐', '✨', '⋆', '✩', '★'];
+
+            // Create random stars
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star animate';
+                star.innerHTML = starSymbols[Math.floor(Math.random() * starSymbols.length)];
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+            }
+
+            // Create sparkles
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle animate';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 4 + 's';
+                sparkle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                container.appendChild(sparkle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createFloatingStars();
+            generateQuizQuestion();
+            document.getElementById('challengeAnswer').addEventListener('keydown', function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    submitChallenge();
+                }
+            });
+        });
+        let gameState = {
+            score: 0, level: 1, streak: 0,
+            currentQuestion: null, selectedOption: null,
+            challengeActive: false, challengeTimer: null, timeLeft: 60,
+            currentChallengeAnswer: 0
+        };
+        const pythagoreanTriples = [
+            { a: 3, b: 4, c: 5 }, { a: 5, b: 12, c: 13 }, { a: 8, b: 15, c: 17 },
+            { a: 7, b: 24, c: 25 }, { a: 9, b: 40, c: 41 }, { a: 6, b: 8, c: 10 },
+            { a: 20, b: 21, c: 29 }
+        ];
+        function showTab(tabName, event) {
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        function calculateHypotenuse() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            if (!a || !b || a <= 0 || b <= 0) {
+                showResult('calculatorResult', 'Please enter valid positive numbers for sides a and b!', false);
+                return;
+            }
+            const c = Math.sqrt(a * a + b * b);
+            document.getElementById('sideC').value = c.toFixed(2);
+            showResult('calculatorResult', `🎉 Hypotenuse calculated! c = √(${a}² + ${b}²) = ${c.toFixed(2)}`, true);
+            drawTriangle(a, b, c);
+            updateScore(10);
+        }
+        function calculateSide() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            const c = parseFloat(document.getElementById('sideC').value);
+            let result = '', success = false;
+            if (c > 0 && a > 0 && !b) {
+                if (c > a) {
+                    const b_calc = Math.sqrt(c * c - a * a);
+                    document.getElementById('sideB').value = b_calc.toFixed(2);
+                    result = `🔍 Side b = √(${c}² - ${a}²) = ${b_calc.toFixed(2)}`;
+                    success = true; drawTriangle(a, b_calc, c);
+                } else { result = 'Error: Hypotenuse must be longer than the other sides!'; }
+            } else if (c > 0 && b > 0 && !a) {
+                if (c > b) {
+                    const a_calc = Math.sqrt(c * c - b * b);
+                    document.getElementById('sideA').value = a_calc.toFixed(2);
+                    result = `🔍 Side a = √(${c}² - ${b}²) = ${a_calc.toFixed(2)}`;
+                    success = true; drawTriangle(a_calc, b, c);
+                } else { result = 'Error: Hypotenuse must be longer than the other sides!'; }
+            } else {
+                result = 'Please provide the hypotenuse (c) and ONE other side (a or b).';
+            }
+            showResult('calculatorResult', result, success);
+            if (success) updateScore(15);
+        }
+        function drawTriangle(a, b, c) {
+            const canvas = document.getElementById('triangleCanvas');
+            const ctx = canvas.getContext('2d');
+            const padding = 40;
+            const maxWidth = canvas.width - 2 * padding;
+            const maxHeight = canvas.height - 2 * padding;
+            const scale = Math.min(maxWidth / a, maxHeight / b);
+            const scaledA = a * scale;
+            const scaledB = b * scale;
+            const startX = padding;
+            const startY = canvas.height - padding;
+            let progress = 0;
+            function animate() {
+                if (progress >= 3) return;
+                progress += 0.05;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#9d4edd';
+                ctx.lineWidth = 3;
+                // Draw side A (bottom)
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                if (progress < 1) {
+                    ctx.lineTo(startX + scaledA * progress, startY);
+                } else {
+                    ctx.lineTo(startX + scaledA, startY);
+                }
+                ctx.stroke();
+                // Draw side B (left)
+                if (progress > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    if (progress < 2) {
+                        ctx.lineTo(startX, startY - scaledB * (progress - 1));
+                    } else {
+                        ctx.lineTo(startX, startY - scaledB);
+                    }
+                    ctx.stroke();
+                }
+                // Draw side C (hypotenuse)
+                if (progress > 2) {
+                    ctx.beginPath();
+                    ctx.moveTo(startX + scaledA, startY);
+                    if (progress < 3) {
+                        ctx.lineTo(startX + scaledA * (1 - (progress - 2)), startY - scaledB * (progress - 2));
+                    } else {
+                        ctx.lineTo(startX, startY - scaledB);
+                    }
+                    ctx.stroke();
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+            // Final labels after animation
+            setTimeout(() => {
+                ctx.fillStyle = '#e0d8ff';
+                ctx.font = '16px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText(`a = ${a.toFixed(1)}`, startX + scaledA / 2, startY + 20);
+                ctx.textAlign = 'right';
+                ctx.fillText(`b = ${b.toFixed(1)}`, startX - 10, startY - scaledB / 2);
+                ctx.save();
+                ctx.translate(startX + scaledA / 2, startY - scaledB / 2);
+                ctx.rotate(Math.atan(-b / a));
+                ctx.textAlign = 'center';
+                ctx.fillText(`c = ${c.toFixed(1)}`, 0, -10);
+                ctx.restore();
+            }, 1000);
+        }
+        function generateQuizQuestion() {
+            const isWordProblem = Math.random() > 0.7; // 30% chance of a word problem
+            const triple = { ...pythagoreanTriples[Math.floor(Math.random() * pythagoreanTriples.length)] };
+            if (Math.random() > 0.5) [triple.a, triple.b] = [triple.b, triple.a]; // Swap a and b for variety
+            const find = ['a', 'b', 'c'][Math.floor(Math.random() * 3)];
+            let questionText = '', correctAnswer = 0;
+            if (isWordProblem) {
+                switch (find) {
+                    case 'c':
+                        questionText = `A wizard's ladder leans against a castle wall. Its base is ${triple.a} feet from the wall, and it reaches ${triple.b} feet high. How long is the ladder?`;
+                        correctAnswer = triple.c;
+                        break;
+                    case 'a':
+                        questionText = `A ${triple.c} foot enchanted ladder leans against a wall, reaching ${triple.b} feet high. How far is the base of the ladder from the wall?`;
+                        correctAnswer = triple.a;
+                        break;
+                    case 'b':
+                        questionText = `A ${triple.c} foot ladder is placed ${triple.a} feet from a wall. How high up the wall does it reach?`;
+                        correctAnswer = triple.b;
+                        break;
+                }
+            } else {
+                switch (find) {
+                    case 'c':
+                        questionText = `In a right triangle, the two legs are ${triple.a} and ${triple.b}. What is the hypotenuse?`;
+                        correctAnswer = triple.c;
+                        break;
+                    case 'a':
+                        questionText = `A right triangle has a hypotenuse of ${triple.c} and one leg of ${triple.b}. What is the other leg?`;
+                        correctAnswer = triple.a;
+                        break;
+                    case 'b':
+                        questionText = `A right triangle has a hypotenuse of ${triple.c} and one leg of ${triple.a}. What is the other leg?`;
+                        correctAnswer = triple.b;
+                        break;
+                }
+            }
+            gameState.currentQuestion = { text: questionText, answer: correctAnswer };
+            document.getElementById('quizQuestion').innerHTML = `<h3>${questionText}</h3>`;
+            const options = new Set([correctAnswer]);
+            while (options.size < 4) {
+                const wrongAnswer = Math.max(1, Math.round(correctAnswer * (0.5 + Math.random())));
+                options.add(wrongAnswer);
+            }
+            const shuffledOptions = Array.from(options).sort(() => Math.random() - 0.5);
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            shuffledOptions.forEach((option, index) => {
+                const optEl = document.createElement('div');
+                optEl.className = 'quiz-option';
+                optEl.textContent = option;
+                optEl.onclick = () => selectOption(optEl, option);
+                optionsContainer.appendChild(optEl);
+            });
+            gameState.selectedOption = null;
+            document.getElementById('quizResult').classList.remove('show');
+        }
+        function selectOption(element, value) {
+            document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            gameState.selectedOption = value;
+        }
+        function checkAnswer() {
+            if (gameState.selectedOption === null) {
+                showResult('quizResult', 'Please select an answer!', false);
+                return;
+            }
+            const isCorrect = gameState.selectedOption === gameState.currentQuestion.answer;
+            if (isCorrect) {
+                gameState.streak++;
+                const points = 20 + (gameState.streak * 5);
+                updateScore(points);
+                showResult('quizResult', `🎉 Correct! +${points} points`, true);
+                createParticles(document.getElementById('quizBox'));
+            } else {
+                gameState.streak = 0;
+                showResult('quizResult', `❌ Incorrect. The answer was ${gameState.currentQuestion.answer}`, false);
+                updateScore(0); // This will update the streak display
+            }
+            setTimeout(generateQuizQuestion, 2000);
+        }
+        // --- Challenge Mode ---
+        function startChallenge() {
+            gameState.challengeActive = true;
+            gameState.timeLeft = 60;
+            updateScore(0); // Reset streak for challenge
+            document.getElementById('startChallengeBtn').style.display = 'none';
+            document.getElementById('challengeAnswer').disabled = false;
+            document.getElementById('challengeResult').classList.remove('show');
+            gameState.challengeTimer = setInterval(() => {
+                gameState.timeLeft--;
+                document.getElementById('timeLeft').textContent = gameState.timeLeft;
+                if (gameState.timeLeft <= 0) {
+                    endChallenge();
+                }
+            }, 1000);
+            generateChallengeQuestion();
+        }
+        function endChallenge() {
+            clearInterval(gameState.challengeTimer);
+            gameState.challengeActive = false;
+            document.getElementById('startChallengeBtn').style.display = 'block';
+            document.getElementById('challengeAnswer').disabled = true;
+            document.getElementById('challengeQuestion').innerHTML = `<h3>Challenge finished! Great job! 🎉</h3>`;
+        }
+        function generateChallengeQuestion() {
+            if (!gameState.challengeActive) return;
+            const a = Math.floor(Math.random() * 20) + 1;
+            const b = Math.floor(Math.random() * 20) + 1;
+            const c = Math.sqrt(a * a + b * b);
+            gameState.currentChallengeAnswer = parseFloat(c.toFixed(1));
+            document.getElementById('challengeQuestion').innerHTML = `<h3>Quick! Find the hypotenuse: a = ${a}, b = ${b}</h3>`;
+            document.getElementById('challengeAnswer').value = '';
+            document.getElementById('challengeAnswer').focus();
+        }
+        function submitChallenge() {
+            if (!gameState.challengeActive) return;
+            const userAnswer = parseFloat(document.getElementById('challengeAnswer').value);
+            if (Math.abs(userAnswer - gameState.currentChallengeAnswer) <= 0.1) {
+                const points = 30;
+                updateScore(points);
+                showResult('challengeResult', `⚡ Correct! +${points} points`, true);
+                createParticles(document.getElementById('challengeBox'));
+            } else {
+                showResult('challengeResult', `❌ Wrong! Answer: ${gameState.currentChallengeAnswer}`, false);
+            }
+            setTimeout(() => {
+                if (gameState.challengeActive) {
+                    generateChallengeQuestion();
+                    document.getElementById('challengeResult').classList.remove('show');
+                }
+            }, 1000);
+        }
+        // --- UI & State Helpers ---
+        function showResult(elementId, message, isSuccess) {
+            const resultEl = document.getElementById(elementId);
+            resultEl.textContent = message;
+            resultEl.className = 'result show ' + (isSuccess ? 'correct' : 'incorrect');
+        }
+        function updateScore(points) {
+            if (points > 0) gameState.score += points;
+            const oldLevel = gameState.level;
+            gameState.level = Math.floor(gameState.score / 100) + 1;
+            animateValue('score', parseInt(document.getElementById('score').textContent), gameState.score, 500);
+            animateValue('streak', parseInt(document.getElementById('streak').textContent), gameState.streak, 300);
+            if (oldLevel !== gameState.level) {
+                animateValue('level', oldLevel, gameState.level, 500);
+            }
+            const progress = (gameState.score % 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const obj = document.getElementById(id);
+            const timer = setInterval(() => {
+                current += increment;
+                obj.textContent = current;
+                if (current == end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+        function createParticles(targetElement) {
+            const rect = targetElement.getBoundingClientRect();
+            const sparkleSymbols = ['✨', '⭐', '✦', '⋆'];
+
+            for (let i = 0; i < 30; i++) {
+                // Create regular particles
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                document.body.appendChild(particle);
+                const angle = Math.random() * 360;
+                const distance = Math.random() * 100 + 50;
+                const size = Math.random() * 5 + 5;
+                const color = [`#9d4edd`, `#c77dff`, `#e0d8ff`][Math.floor(Math.random() * 3)];
+                particle.style.cssText = `
+                    --color: ${color};
+                    width: ${size}px;
+                    height: ${size}px;
+                    top: ${rect.top + rect.height / 2}px;
+                    left: ${rect.left + rect.width / 2}px;
+                    --x: ${Math.cos(angle * Math.PI / 180) * distance}px;
+                    --y: ${Math.sin(angle * Math.PI / 180) * distance}px;
+                `;
+                setTimeout(() => particle.remove(), 700);
+            }
+
+            // Create sparkle particles
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.style.cssText = `
+                    position: absolute;
+                    top: ${rect.top + rect.height / 2}px;
+                    left: ${rect.left + rect.width / 2}px;
+                    font-size: ${Math.random() * 10 + 15}px;
+                    color: #e0d8ff;
+                    pointer-events: none;
+                    z-index: 1000;
+                    animation: sparkle-dance 2s ease-out forwards;
+                    animation-delay: ${Math.random() * 0.5}s;
+                `;
+                sparkle.innerHTML = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 2500);
+            }
+        }
+    </script>
+</body>
+
+</html>

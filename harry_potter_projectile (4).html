@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harry Potter Projectile Motion Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #e0e0e0;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .controls {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 20px;
+            width: 300px;
+            height: fit-content;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d4af37;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #d4af37, #ffd700);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .simulation-area {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .info-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 20px;
+            width: 280px;
+            height: fit-content;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-panel h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #d4af37;
+        }
+
+        .info-item strong {
+            color: #ffd700;
+        }
+
+        .force-indicators {
+            margin-top: 20px;
+        }
+
+        .force-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .force-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .gravity { background-color: #ff4444; }
+        .velocity { background-color: #44ff44; }
+        .air-resistance { background-color: #4444ff; }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .sparkle {
+            animation: sparkle 1s infinite;
+        }
+
+        .trajectory-info {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .golden-snitch {
+            font-size: 20px;
+            display: inline-block;
+            animation: sparkle 2s infinite;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .controls, .info-panel {
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Hogwarts Physics Laboratory ⚡</h1>
+        <p>Master the Art of Projectile Motion with Magical Objects</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <h3>🪄 Launch Parameters</h3>
+            
+            <div class="control-group">
+                <label for="projectile">Magical Object:</label>
+                <select id="projectile">
+                    <option value="snitch">Golden Snitch</option>
+                    <option value="quaffle">Quaffle</option>
+                    <option value="bludger">Bludger</option>
+                    <option value="wand">Magic Wand</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="velocity">Initial Velocity (m/s):</label>
+                <input type="range" id="velocity" min="5" max="50" value="25" step="1">
+                <span id="velocityValue">25</span>
+            </div>
+
+            <div class="control-group">
+                <label for="angle">Launch Angle (degrees):</label>
+                <input type="range" id="angle" min="5" max="85" value="45" step="1">
+                <span id="angleValue">45</span>
+            </div>
+
+            <div class="control-group">
+                <label for="height">Launch Height (m):</label>
+                <input type="range" id="height" min="0" max="20" value="2" step="0.5">
+                <span id="heightValue">2</span>
+            </div>
+
+            <div class="control-group">
+                <label for="gravity">Gravity (m/s²):</label>
+                <input type="range" id="gravity" min="5" max="15" value="9.81" step="0.1">
+                <span id="gravityValue">9.81</span>
+            </div>
+
+            <div class="control-group">
+                <label for="airResistance">Air Resistance:</label>
+                <input type="checkbox" id="airResistance" style="width: auto;">
+                <span style="margin-left: 10px;">Include drag force</span>
+            </div>
+
+            <button class="button" id="launchBtn">🚀 Cast Launch Spell!</button>
+            <button class="button" id="resetBtn">🔄 Reset Simulation</button>
+            <button class="button" id="pauseBtn">⏸️ Pause/Resume</button>
+        </div>
+
+        <div class="simulation-area">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="info-panel">
+            <h3>📊 Flight Data</h3>
+            
+            <div class="info-item">
+                <strong>Range:</strong> <span id="rangeValue">-</span> m
+            </div>
+            
+            <div class="info-item">
+                <strong>Max Height:</strong> <span id="maxHeightValue">-</span> m
+            </div>
+            
+            <div class="info-item">
+                <strong>Flight Time:</strong> <span id="flightTimeValue">-</span> s
+            </div>
+            
+            <div class="info-item">
+                <strong>Current Speed:</strong> <span id="speedValue">-</span> m/s
+            </div>
+
+            <div class="force-indicators">
+                <h4 style="color: #d4af37; margin-bottom: 10px;">🔮 Force Vectors</h4>
+                
+                <div class="force-item">
+                    <div class="force-color gravity"></div>
+                    <span>Gravity (Red)</span>
+                </div>
+                
+                <div class="force-item">
+                    <div class="force-color velocity"></div>
+                    <span>Velocity (Green)</span>
+                </div>
+                
+                <div class="force-item">
+                    <div class="force-color" style="background-color: #00ffff;"></div>
+                    <span>Vx - Horizontal (Cyan)</span>
+                </div>
+                
+                <div class="force-item">
+                    <div class="force-color" style="background-color: #ff00ff;"></div>
+                    <span>Vy - Vertical (Magenta)</span>
+                </div>
+                
+                <div class="force-item">
+                    <div class="force-color air-resistance"></div>
+                    <span>Air Resistance (Blue)</span>
+                </div>
+            </div>
+
+            <div class="trajectory-info">
+                <h4 style="color: #d4af37;">✨ Magical Theory</h4>
+                <p style="font-size: 12px; line-height: 1.4; margin-top: 8px;">
+                    The trajectory follows the ancient spell: <br>
+                    <strong>x = v₀cos(θ)t</strong><br>
+                    <strong>y = h + v₀sin(θ)t - ½gt²</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ProjectileSimulator {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.animationId = null;
+                this.isRunning = false;
+                this.isPaused = false;
+                this.trajectory = [];
+                this.completeTrajectory = []; // Store complete trajectory path
+                this.currentProjectile = null;
+                this.startTime = 0;
+                this.maxHeight = 0;
+                this.totalRange = 0;
+                
+                this.initializeCanvas();
+                this.bindEvents();
+                this.drawInitialState();
+            }
+
+            initializeCanvas() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+
+            resizeCanvas() {
+                const container = this.canvas.parentElement;
+                this.canvas.width = container.clientWidth;
+                this.canvas.height = container.clientHeight;
+                this.scale = this.canvas.width / 100; // 100 meters width
+                this.groundY = this.canvas.height - 50;
+            }
+
+            bindEvents() {
+                // Update display values
+                document.getElementById('velocity').addEventListener('input', (e) => {
+                    document.getElementById('velocityValue').textContent = e.target.value;
+                });
+
+                document.getElementById('angle').addEventListener('input', (e) => {
+                    document.getElementById('angleValue').textContent = e.target.value;
+                });
+
+                document.getElementById('height').addEventListener('input', (e) => {
+                    document.getElementById('heightValue').textContent = e.target.value;
+                });
+
+                document.getElementById('gravity').addEventListener('input', (e) => {
+                    document.getElementById('gravityValue').textContent = e.target.value;
+                });
+
+                // Control buttons
+                document.getElementById('launchBtn').addEventListener('click', () => this.launch());
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
+            }
+
+            getProjectileEmoji() {
+                const type = document.getElementById('projectile').value;
+                const emojis = {
+                    'snitch': '🟡',
+                    'quaffle': '🔴',
+                    'bludger': '⚫',
+                    'wand': '🪄'
+                };
+                return emojis[type] || '🟡';
+            }
+
+            launch() {
+                if (this.isRunning) return;
+
+                // Get parameters
+                const v0 = parseFloat(document.getElementById('velocity').value);
+                const angle = parseFloat(document.getElementById('angle').value) * Math.PI / 180;
+                const h0 = parseFloat(document.getElementById('height').value);
+                const g = parseFloat(document.getElementById('gravity').value);
+                const includeAirResistance = document.getElementById('airResistance').checked;
+
+                // Initialize projectile
+                this.currentProjectile = {
+                    x: 0,
+                    y: h0,
+                    vx: v0 * Math.cos(angle),
+                    vy: v0 * Math.sin(angle),
+                    v0: v0,
+                    angle: angle,
+                    h0: h0,
+                    g: g,
+                    includeAirResistance: includeAirResistance,
+                    dragCoeff: 0.01,
+                    emoji: this.getProjectileEmoji()
+                };
+
+                // Calculate theoretical values
+                this.calculateTheoreticalValues();
+
+                // Reset tracking variables
+                this.trajectory = [];
+                this.completeTrajectory = []; // Reset complete trajectory
+                this.maxHeight = h0;
+                this.totalRange = 0;
+                this.startTime = Date.now();
+                this.isRunning = true;
+                this.isPaused = false;
+
+                // Start animation
+                this.animate();
+            }
+
+            calculateTheoreticalValues() {
+                const { v0, angle, h0, g } = this.currentProjectile;
+                
+                // Time of flight
+                const discriminant = (v0 * Math.sin(angle))**2 + 2 * g * h0;
+                const timeOfFlight = (v0 * Math.sin(angle) + Math.sqrt(discriminant)) / g;
+                
+                // Range
+                const theoreticalRange = (v0 * Math.cos(angle) * timeOfFlight);
+                
+                // Max height
+                const theoreticalMaxHeight = h0 + (v0 * Math.sin(angle))**2 / (2 * g);
+
+                document.getElementById('flightTimeValue').textContent = timeOfFlight.toFixed(2);
+            }
+
+            animate() {
+                if (!this.isRunning || this.isPaused) return;
+
+                this.updatePhysics();
+                this.draw();
+
+                // Check if projectile has landed (with a small buffer to prevent underground)
+                if (this.currentProjectile.y <= 0.2) {
+                    // Stop exactly at ground level
+                    this.currentProjectile.y = 0;
+                    this.isRunning = false;
+                    this.totalRange = this.currentProjectile.x;
+                    document.getElementById('rangeValue').textContent = this.totalRange.toFixed(2);
+                    
+                    // Final draw to show ball on ground
+                    this.draw();
+                    return;
+                }
+
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+
+            updatePhysics() {
+                const dt = 0.005; // Even slower simulation - reduced from 0.008
+                const p = this.currentProjectile;
+
+                // Store position for complete trajectory (never remove points)
+                this.completeTrajectory.push({ x: p.x, y: p.y });
+
+                // Calculate current speed and update display
+                const currentSpeed = Math.sqrt(p.vx**2 + p.vy**2);
+                document.getElementById('speedValue').textContent = currentSpeed.toFixed(2);
+
+                // Apply air resistance if enabled
+                if (p.includeAirResistance) {
+                    const speed = Math.sqrt(p.vx**2 + p.vy**2);
+                    const dragForce = p.dragCoeff * speed;
+                    
+                    // Apply drag opposite to velocity direction
+                    p.vx -= dragForce * (p.vx / speed) * dt;
+                    p.vy -= dragForce * (p.vy / speed) * dt;
+                }
+
+                // Apply gravity
+                p.vy -= p.g * dt;
+
+                // Update position
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+
+                // Track maximum height
+                if (p.y > this.maxHeight) {
+                    this.maxHeight = p.y;
+                }
+                document.getElementById('maxHeightValue').textContent = this.maxHeight.toFixed(2);
+            }
+
+            draw() {
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw background
+                this.drawBackground();
+
+                // Draw trajectory
+                this.drawTrajectory();
+
+                // Draw projectile
+                this.drawProjectile();
+
+                // Draw force vectors
+                this.drawForceVectors();
+
+                // Draw ground and launch point
+                this.drawGround();
+            }
+
+            drawBackground() {
+                // Starry night sky
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                for (let i = 0; i < 50; i++) {
+                    const x = Math.random() * this.canvas.width;
+                    const y = Math.random() * (this.canvas.height - 100);
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 1, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+
+            drawTrajectory() {
+                if (this.completeTrajectory.length < 2) return;
+
+                // Draw the complete trajectory path
+                this.ctx.strokeStyle = '#ffd700';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+
+                for (let i = 0; i < this.completeTrajectory.length; i++) {
+                    const x = this.completeTrajectory[i].x * this.scale;
+                    const y = this.groundY - this.completeTrajectory[i].y * this.scale;
+                    
+                    if (i === 0) {
+                        this.ctx.moveTo(x, y);
+                    } else {
+                        this.ctx.lineTo(x, y);
+                    }
+                }
+                
+                this.ctx.stroke();
+
+                // Draw trajectory points as sparkles (sample every 5th point to avoid overcrowding)
+                this.ctx.fillStyle = '#ffd700';
+                for (let i = 0; i < this.completeTrajectory.length; i += 8) {
+                    const x = this.completeTrajectory[i].x * this.scale;
+                    const y = this.groundY - this.completeTrajectory[i].y * this.scale;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 2, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+
+            drawProjectile() {
+                if (!this.currentProjectile) return;
+
+                const x = this.currentProjectile.x * this.scale;
+                const y = this.groundY - this.currentProjectile.y * this.scale;
+
+                // Draw emoji projectile
+                this.ctx.font = '24px serif';
+                this.ctx.fillText(this.currentProjectile.emoji, x - 12, y + 8);
+
+                // Add magical glow effect
+                this.ctx.shadowColor = '#ffd700';
+                this.ctx.shadowBlur = 15;
+                this.ctx.fillText(this.currentProjectile.emoji, x - 12, y + 8);
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawForceVectors() {
+                if (!this.currentProjectile) return;
+
+                const x = this.currentProjectile.x * this.scale;
+                const y = this.groundY - this.currentProjectile.y * this.scale;
+                const scale = 4;
+
+                // Gravity vector (red, pointing down)
+                this.ctx.strokeStyle = '#ff4444';
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x, y + this.currentProjectile.g * scale);
+                this.ctx.stroke();
+                this.drawArrowHead(x, y + this.currentProjectile.g * scale, 0, Math.PI/2, '#ff4444');
+
+                // Main velocity vector (green)
+                const velScale = 6;
+                const velX = x + this.currentProjectile.vx * velScale;
+                const velY = y - this.currentProjectile.vy * velScale;
+                
+                this.ctx.strokeStyle = '#44ff44';
+                this.ctx.lineWidth = 4;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(velX, velY);
+                this.ctx.stroke();
+                
+                const velAngle = Math.atan2(-this.currentProjectile.vy, this.currentProjectile.vx);
+                this.drawArrowHead(velX, velY, 0, velAngle, '#44ff44');
+
+                // Velocity components
+                // Horizontal component (parallel - cyan)
+                const vxEnd = x + this.currentProjectile.vx * velScale;
+                this.ctx.strokeStyle = '#00ffff';
+                this.ctx.lineWidth = 2;
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(vxEnd, y);
+                this.ctx.stroke();
+                this.drawArrowHead(vxEnd, y, 0, 0, '#00ffff');
+
+                // Vertical component (perpendicular - magenta)
+                const vyEnd = y - this.currentProjectile.vy * velScale;
+                this.ctx.strokeStyle = '#ff00ff';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x, vyEnd);
+                this.ctx.stroke();
+                this.drawArrowHead(x, vyEnd, 0, -Math.PI/2, '#ff00ff');
+
+                // Component completion lines (dotted)
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(vxEnd, y);
+                this.ctx.lineTo(velX, velY);
+                this.ctx.stroke();
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, vyEnd);
+                this.ctx.lineTo(velX, velY);
+                this.ctx.stroke();
+
+                // Reset line dash
+                this.ctx.setLineDash([]);
+
+                // Add component labels
+                this.ctx.fillStyle = '#00ffff';
+                this.ctx.font = 'bold 14px Arial';
+                this.ctx.strokeStyle = '#000000';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeText(`Vx: ${this.currentProjectile.vx.toFixed(1)} m/s`, vxEnd + 5, y - 5);
+                this.ctx.fillText(`Vx: ${this.currentProjectile.vx.toFixed(1)} m/s`, vxEnd + 5, y - 5);
+                
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.strokeText(`Vy: ${this.currentProjectile.vy.toFixed(1)} m/s`, x + 5, vyEnd - 5);
+                this.ctx.fillText(`Vy: ${this.currentProjectile.vy.toFixed(1)} m/s`, x + 5, vyEnd - 5);
+
+                // Air resistance vector (blue, opposite to velocity)
+                if (this.currentProjectile.includeAirResistance) {
+                    const dragScale = 3;
+                    const dragX = x - this.currentProjectile.vx * dragScale;
+                    const dragY = y + this.currentProjectile.vy * dragScale;
+                    
+                    this.ctx.strokeStyle = '#4444ff';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, y);
+                    this.ctx.lineTo(dragX, dragY);
+                    this.ctx.stroke();
+                    this.drawArrowHead(dragX, dragY, 0, velAngle + Math.PI, '#4444ff');
+                }
+            }
+
+            drawArrowHead(x, y, dx, angle, color) {
+                this.ctx.fillStyle = color;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x - 8 * Math.cos(angle - Math.PI/6), y - 8 * Math.sin(angle - Math.PI/6));
+                this.ctx.lineTo(x - 8 * Math.cos(angle + Math.PI/6), y - 8 * Math.sin(angle + Math.PI/6));
+                this.ctx.closePath();
+                this.ctx.fill();
+            }
+
+            drawGround() {
+                // Draw ground
+                this.ctx.fillStyle = '#4a4a4a';
+                this.ctx.fillRect(0, this.groundY, this.canvas.width, this.canvas.height - this.groundY);
+
+                // Draw launch platform
+                const launchHeight = parseFloat(document.getElementById('height').value);
+                const platformY = this.groundY - launchHeight * this.scale;
+                
+                this.ctx.fillStyle = '#8b4513';
+                this.ctx.fillRect(0, platformY, 30, this.groundY - platformY);
+
+                // Draw launch point marker only if no projectile is launched or simulation is reset
+                if (!this.isRunning && !this.currentProjectile) {
+                    this.ctx.fillStyle = '#d4af37';
+                    this.ctx.beginPath();
+                    this.ctx.arc(15, platformY, 5, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    // Draw the projectile emoji on the launch platform when not running
+                    const emoji = this.getProjectileEmoji();
+                    this.ctx.font = '24px serif';
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.fillText(emoji, 3, platformY - 5);
+                }
+
+                // Draw scale markers
+                this.ctx.fillStyle = '#fff';
+                this.ctx.font = '12px Arial';
+                for (let i = 0; i <= 100; i += 20) {
+                    const x = i * this.scale;
+                    this.ctx.fillText(`${i}m`, x, this.groundY + 15);
+                    
+                    // Draw vertical line
+                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, this.groundY);
+                    this.ctx.lineTo(x, this.groundY - 10);
+                    this.ctx.stroke();
+                }
+            }
+
+            drawInitialState() {
+                this.draw();
+            }
+
+            drawProjectileOnPlatform() {
+                // Draw the projectile emoji on the launch platform when simulation is not running
+                if (!this.isRunning && !this.currentProjectile) {
+                    const launchHeight = parseFloat(document.getElementById('height').value);
+                    const platformY = this.groundY - launchHeight * this.scale;
+                    const emoji = this.getProjectileEmoji();
+                    
+                    this.ctx.font = '24px serif';
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.shadowColor = '#ffd700';
+                    this.ctx.shadowBlur = 10;
+                    this.ctx.fillText(emoji, 3, platformY - 5);
+                    this.ctx.shadowBlur = 0;
+                }
+            }
+
+            reset() {
+                this.isRunning = false;
+                this.isPaused = false;
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                
+                this.currentProjectile = null;
+                this.trajectory = [];
+                this.completeTrajectory = []; // Reset complete trajectory
+                this.maxHeight = 0;
+                this.totalRange = 0;
+                
+                // Reset display values
+                document.getElementById('rangeValue').textContent = '-';
+                document.getElementById('maxHeightValue').textContent = '-';
+                document.getElementById('speedValue').textContent = '-';
+                
+                this.drawInitialState();
+            }
+
+            togglePause() {
+                if (!this.isRunning) return;
+                
+                this.isPaused = !this.isPaused;
+                if (!this.isPaused) {
+                    this.animate();
+                }
+            }
+        }
+
+        // Initialize the simulator when the page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new ProjectileSimulator();
+        });
+    </script>
+</body>
+</html>

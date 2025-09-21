@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hogwarts Teacher Attendance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Harry Potter theme CSS */
+        :root {
+            --gryffindor-red: #740001;
+            --gryffindor-gold: #D3A625;
+            --slytherin-green: #1A472A;
+            --slytherin-silver: #5D5D5D;
+            --ravenclaw-blue: #0E1A40;
+            --ravenclaw-bronze: #946B2D;
+            --hufflepuff-yellow: #ECB939;
+            --hufflepuff-black: #372E29;
+            --parchment: #F5ECD7;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #0e1729;
+            color: #FFF;
+            font-family: 'Cormorant Garamond', serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(41, 84, 150, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.2) 0%, transparent 40%);
+        }
+        
+        #app {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        
+        
+        
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .hogwarts-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.2rem;
+            color: var(--gryffindor-gold);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .wand-separator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .wand-separator::before,
+        .wand-separator::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gryffindor-gold), transparent);
+        }
+        
+        .wand-icon {
+            margin: 0 15px;
+            font-size: 1.8rem;
+            color: var(--gryffindor-gold);
+        }
+        
+        /* Main content layout */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 992px) {
+            .content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        /* Calendar styles */
+        .calendar-container {
+            background: rgba(14, 23, 41, 0.8);
+            border: 2px solid var(--gryffindor-gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .month-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .month-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--gryffindor-gold);
+        }
+        
+        .house-crest {
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 2rem;
+        }
+        
+        .weekday {
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: bold;
+            color: var(--gryffindor-gold);
+            font-size: 0.9rem;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.05);
+            border-color: var(--gryffindor-gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+        
+        .calendar-day.empty {
+            border: none;
+            cursor: default;
+        }
+        
+        .calendar-day.empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status-dot {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .present {
+            background-color: #10B981;
+        }
+        
+        .absent {
+            background-color: #EF4444;
+        }
+        
+        .late {
+            background-color: #F59E0B;
+        }
+        
+        .early-dismissal {
+            background-color: #3B82F6;
+        }
+        
+        /* Attendance form styles */
+        .attendance-form {
+            background: rgba(14, 23, 41, 0.8);
+            border: 2px solid var(--gryffindor-gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--gryffindor-gold);
+        }
+        
+        .selected-date {
+            font-size: 1.1rem;
+            color: #c0c0c0;
+            margin-top: 0.5rem;
+        }
+        
+        .status-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .status-option {
+            padding: 1rem;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--gryffindor-gold);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-option.selected {
+            border-color: var(--gryffindor-gold);
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .status-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-label {
+            font-weight: 600;
+        }
+        
+        .notes-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .notes-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gryffindor-gold);
+            font-weight: 600;
+        }
+        
+        .notes-input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+        }
+        
+        .notes-input:focus {
+            outline: none;
+            border-color: var(--gryffindor-gold);
+        }
+        
+        .save-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--gryffindor-gold), #b68c2a);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .save-button:active {
+            transform: translateY(0);
+        }
+        
+        .save-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.2),
+                rgba(255, 255, 255, 0)
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+        
+        .save-button:hover::after {
+            transform: translateX(100%) rotate(30deg);
+        }
+        
+        .current-record {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+        }
+        
+        .current-record h4 {
+            color: var(--gryffindor-gold);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .current-record p {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            color: #c0c0c0;
+            font-size: 0.9rem;
+        }
+        
+        /* Parchment effect for selected elements */
+        .parchment {
+            background-color: var(--parchment);
+            color: #333;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .parchment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(139,69,19,0.1) 0%, transparent 50%, rgba(139,69,19,0.1) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.1"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"></feTurbulence></filter><rect width="100" height="100" filter="url(%23grain)"></rect></svg>');
+            pointer-events: none;
+            border-radius: 5px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hogwarts-title {
+                font-size: 2.5rem;
+            }
+            
+            .status-options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gryffindor-gold);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b68c2a;
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <div id="app">
+        <header class="header">
+            <h1 class="hogwarts-title">Hogwarts Teacher Attendance</h1>
+            <p class="subtitle">Magical Record Keeping System</p>
+            
+            <div class="wand-separator">
+                <div class="wand-icon">⚡</div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="calendar-container">
+                <div class="month-header">
+                    <h2 class="month-title">August 2025</h2>
+                    <div class="house-crest" style="background-image: url('Generated\ Image\ September\ 21\,\ 2025\ -\ 7_48AM.png')"></div>
+                </div>
+                
+                <div class="calendar-grid" id="august-calendar">
+                    <!-- August calendar will be populated by JavaScript -->
+                </div>
+                
+                <div class="month-header">
+                    <h2 class="month-title">September 2025</h2>
+                    <div class="house-crest" style="background-image: url('Gemini_Generated_Image_v9zph4v9zph4v9zp.png')"></div>
+                </div>
+                <div class="calendar-grid" id="september-calendar">
+                    <!-- September calendar will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="attendance-form">
+                <div class="form-header">
+                    <h2 class="form-title">Mark Attendance</h2>
+                    <p class="selected-date" id="selectedDateText">Select a date to mark attendance</p>
+                </div>
+                
+                <div class="status-options">
+                    <div class="status-option" data-status="present">
+                        <div class="status-icon">✅</div>
+                        <div class="status-label">Present</div>
+                    </div>
+                    <div class="status-option" data-status="absent">
+                        <div class="status-icon">❌</div>
+                        <div class="status-label">Absent</div>
+                    </div>
+                    <div class="status-option" data-status="late">
+                        <div class="status-icon">⏰</div>
+                        <div class="status-label">Late</div>
+                    </div>
+                    <div class="status-option" data-status="early-dismissal">
+                        <div class="status-icon">🚪</div>
+                        <div class="status-label">Early Dismissal</div>
+                    </div>
+                </div>
+                
+                <div class="notes-section">
+                    <label class="notes-label" for="notesInput">Magical Notes:</label>
+                    <textarea id="notesInput" class="notes-input" rows="3" placeholder="Add notes about this attendance..."></textarea>
+                </div>
+                
+                <button class="save-button" id="saveButton">Save Attendance</button>
+                
+                <div class="current-record parchment" id="currentRecord" style="display: none;">
+                    <h4>📜 Current Record</h4>
+                    <p id="currentStatus"></p>
+                    <p id="currentNote"></p>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>Hogwarts School of Witchcraft and Wizardry © 2023</p>
+            <p>Department of Magical Education</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize attendance data with random values
+            const attendanceData = {
+                august: generateRandomAttendance(31),
+                september: generateRandomAttendance(30)
+            };
+            
+            let selectedDate = null;
+            let selectedStatus = '';
+            
+            // Generate floating magical elements
+            
+            
+            // Populate calendars
+            populateCalendars();
+            
+            // Add event listeners for status options
+            document.querySelectorAll('.status-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.status-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectedStatus = this.getAttribute('data-status');
+                });
+            });
+            
+            // Add event listener for save button
+            document.getElementById('saveButton').addEventListener('click', function() {
+                if (!selectedDate || !selectedStatus) {
+                    alert('Please select a date and status first!');
+                    return;
+                }
+                
+                const note = document.getElementById('notesInput').value;
+                const [month, day] = selectedDate.split('-');
+                
+                // Update attendance data
+                attendanceData[month][parseInt(day) - 1] = {
+                    status: selectedStatus,
+                    note: note
+                };
+                
+                // Update the UI
+                updateCalendarDay(month, parseInt(day), selectedStatus);
+                updateCurrentRecord(month, parseInt(day));
+                
+                // Play magical sound effect
+                playMagicSound();
+                
+                // Show success message
+                showMagicalEffect();
+            });
+            
+            // Function to generate random attendance data
+            function generateRandomAttendance(days) {
+                const statuses = ['present', 'absent', 'late', 'early-dismissal'];
+                return Array.from({length: days}, () => {
+                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                    return {
+                        status: randomStatus,
+                        note: randomStatus !== 'present' ? getRandomNote() : ''
+                    };
+                });
+            }
+            
+            function getRandomNote() {
+                const notes = [
+                    'Quidditch match',
+                    'Potions conference',
+                    'Ministry meeting',
+                    'Dragon handling training',
+                    'Hogsmeade visit',
+                    'O.W.L. examination',
+                    'Defense Against Dark Arts seminar'
+                ];
+                return notes[Math.floor(Math.random() * notes.length)];
+            }
+            
+            // Function to generate calendar days properly
+            function generateCalendar(month, year, container) {
+                const daysInMonth = new Date(year, month, 0).getDate();
+                const firstDay = new Date(year, month - 1, 1).getDay();
+                
+                // Clear existing content
+                container.innerHTML = '';
+                
+                // Add weekday headers
+                const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                weekdays.forEach(weekday => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'weekday';
+                    dayHeader.textContent = weekday;
+                    container.appendChild(dayHeader);
+                });
+                
+                // Add empty cells for days before the start of the month
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'calendar-day empty';
+                    container.appendChild(emptyCell);
+                }
+                
+                // Add days of the month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    dayElement.textContent = day;
+                    
+                    const monthKey = month === 8 ? 'august' : 'september';
+                    dayElement.setAttribute('data-date', ${monthKey}-${day});
+                    
+                    // Add status indicator if available
+                    const status = attendanceData[monthKey][day - 1]?.status;
+                    if (status && status !== 'present') {
+                        const statusDot = document.createElement('div');
+                        statusDot.className = status-dot ${status};
+                        dayElement.appendChild(statusDot);
+                    }
+                    
+                    // Add click event
+                    dayElement.addEventListener('click', function() {
+                        selectDate(monthKey, day);
+                    });
+                    
+                    container.appendChild(dayElement);
+                }
+            }
+            
+            // Function to populate all calendars
+            function populateCalendars() {
+                const augustGrid = document.getElementById('august-calendar');
+                const septemberGrid = document.getElementById('september-calendar');
+                
+                generateCalendar(8, 2023, augustGrid); // August 2023
+                generateCalendar(9, 2023, septemberGrid); // September 2023
+            }
+            
+            // Function to handle date selection
+            function selectDate(month, day) {
+                selectedDate = ${month}-${day};
+                
+                // Update UI
+                document.querySelectorAll('.calendar-day').forEach(el => {
+                    el.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+                    el.style.boxShadow = 'none';
+                });
+                
+                const selectedElement = document.querySelector([data-date="${month}-${day}"]);
+                selectedElement.style.borderColor = 'var(--gryffindor-gold)';
+                selectedElement.style.boxShadow = '0 0 10px rgba(212, 175, 55, 0.7)';
+                
+                // Update selected date text
+                const monthNames = {
+                    'august': 'August',
+                    'september': 'September'
+                };
+                document.getElementById('selectedDateText').textContent = 
+                    ${monthNames[month]} ${day}, 2023;
+                
+                // Update form with existing data
+                const data = attendanceData[month][day - 1];
+                selectedStatus = data.status;
+                
+                document.querySelectorAll('.status-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.getAttribute('data-status') === data.status) {
+                        opt.classList.add('selected');
+                    }
+                });
+                
+                document.getElementById('notesInput').value = data.note || '';
+                
+                // Show current record
+                updateCurrentRecord(month, day);
+                
+                // Play selection sound
+                playSelectionSound();
+            }
+            
+            // Function to update calendar day appearance
+            function updateCalendarDay(month, day, status) {
+                const dayElement = document.querySelector([data-date="${month}-${day}"]);
+                
+                // Remove existing status dots
+                const existingDots = dayElement.querySelectorAll('.status-dot');
+                existingDots.forEach(dot => dot.remove());
+                
+                // Add new status dot if not present
+                if (status !== 'present') {
+                    const statusDot = document.createElement('div');
+                    statusDot.className = status-dot ${status};
+                    dayElement.appendChild(statusDot);
+                }
+            }
+            
+            // Function to update current record display
+            function updateCurrentRecord(month, day) {
+                const data = attendanceData[month][day - 1];
+                const recordElement = document.getElementById('currentRecord');
+                
+                if (data.status) {
+                    const statusText = {
+                        'present': 'Status: ✅ Present',
+                        'absent': 'Status: ❌ Absent',
+                        'late': 'Status: ⏰ Late',
+                        'early-dismissal': 'Status: 🚪 Early Dismissal'
+                    }[data.status];
+                    
+                    document.getElementById('currentStatus').textContent = statusText;
+                    document.getElementById('currentNote').textContent = data.note ? Note: ${data.note} : '';
+                    recordElement.style.display = 'block';
+                } else {
+                    recordElement.style.display = 'none';
+                }
+            }
+            
+            // Function to generate floating elements
+            
+            
+            // Function to play selection sound
+            function playSelectionSound() {
+                // In a real implementation, this would play an actual sound file
+                console.log("Playing selection sound");
+            }
+            
+            // Function to play magic sound
+            function playMagicSound() {
+                // In a real implementation, this would play an actual sound file
+                console.log("Playing magic sound");
+            }
+            
+            // Function to show magical effect
+            function showMagicalEffect() {
+                const effect = document.createElement('div');
+                effect.style.position = 'fixed';
+                effect.style.top = '50%';
+                effect.style.left = '50%';
+                effect.style.transform = 'translate(-50%, -50%)';
+                effect.style.width = '100px';
+                effect.style.height = '100px';
+                effect.style.background = 'radial-gradient(circle, rgba(212,175,55,0.8) 0%, transparent 70%)';
+                effect.style.borderRadius = '50%';
+                effect.style.opacity = '0';
+                effect.style.animation = 'pulse 1s ease-out';
+                effect.style.zIndex = '100';
+                effect.style.pointerEvents = 'none';
+                
+                document.body.appendChild(effect);
+                
+                setTimeout(() => {
+                    document.body.removeChild(effect);
+                }, 1000);
+            }
+            
+            // Add CSS for pulse animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+                    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

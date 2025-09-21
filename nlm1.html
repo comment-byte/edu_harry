@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton's Laws of Motion - Wizarding Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Dancing+Script:wght@700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5em;
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+            to { text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 40px rgba(212, 175, 55, 0.6); }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #8b7355;
+            margin-bottom: 20px;
+        }
+
+        .newton-portrait {
+            width: 200px;
+            height: 250px;
+            margin: 0 auto 30px;
+            border: 5px solid #8b4513;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #8b4513, #a0522d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .laws-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .law-card {
+            background: linear-gradient(145deg, #2c1810, #4a2c1a);
+            border: 3px solid #8b4513;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .law-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+            border-color: #d4af37;
+        }
+
+        .law-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .law-card:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(100%, 100%);
+        }
+
+        .law-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        .law-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #f4f4f4;
+        }
+
+        .law-preview {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .law-detail {
+            display: none;
+            background: linear-gradient(145deg, #1a1a2e, #2c1810);
+            border: 3px solid #d4af37;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #8b4513, #a0522d);
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, #a0522d, #cd853f);
+            transform: scale(1.05);
+        }
+
+        .law-statement {
+            background: linear-gradient(45deg, #2c1810, #4a2c1a);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #d4af37;
+            margin: 20px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .interactive-demo {
+            background: #1a1a2e;
+            border: 2px solid #8b4513;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .demo-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        .demo-area {
+            height: 300px;
+            position: relative;
+            background: linear-gradient(180deg, #4a5568, #2d3748);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .moving-object {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #d4af37;
+            border-radius: 50%;
+            transition: all 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #8b4513, #a0522d);
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(45deg, #a0522d, #cd853f);
+            transform: scale(1.05);
+        }
+
+        .problem-section {
+            background: linear-gradient(145deg, #2c1810, #1a1a2e);
+            border: 2px solid #8b4513;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .problem-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .problem-text {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .solution {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #d4af37;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .show-solution-btn {
+            background: linear-gradient(45deg, #4a2c1a, #8b4513);
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9em;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hogwarts-crest {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #8b4513, #d4af37);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .quidditch-ball {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #d4af37;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+        }
+
+        .force-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 40px solid #ff4444;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .force-arrow.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="hogwarts-crest">🏰</div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Newton's Laws of Motion</h1>
+            <p class="subtitle">A Magical Journey Through Physics at Hogwarts</p>
+            <div class="newton-portrait">
+                👨🏼‍🎓
+            </div>
+            <p style="font-style: italic; color: #8b7355;">Professor Newton's Magical Laws of Motion</p>
+        </div>
+
+        <div class="laws-menu" id="menu">
+            <div class="law-card" onclick="showLaw(1)">
+                <div class="law-number">I</div>
+                <div class="law-title">The Law of Inertia</div>
+                <div class="law-preview">Objects at rest stay at rest, and objects in motion stay in motion, unless acted upon by an external force.</div>
+            </div>
+
+            <div class="law-card" onclick="showLaw(2)">
+                <div class="law-number">II</div>
+                <div class="law-title">Force & Acceleration</div>
+                <div class="law-preview">The acceleration of an object is directly proportional to the net force acting on it.</div>
+            </div>
+
+            <div class="law-card" onclick="showLaw(3)">
+                <div class="law-number">III</div>
+                <div class="law-title">Action & Reaction</div>
+                <div class="law-preview">For every action, there is an equal and opposite reaction.</div>
+            </div>
+        </div>
+
+        <!-- Law 1 Detail -->
+        <div class="law-detail" id="law1">
+            <button class="back-btn" onclick="showMenu()">← Back to Spellbook</button>
+            <h2 style="color: #d4af37; text-align: center; margin-bottom: 20px;">First Law of Motion - The Law of Inertia</h2>
+            
+            <div class="law-statement">
+                "An object at rest stays at rest and an object in motion stays in motion with the same speed and in the same direction unless acted upon by an unbalanced force."
+            </div>
+
+            <div class="interactive-demo">
+                <div class="demo-title">🏈 Quidditch Ball Demonstration</div>
+                <div class="demo-area" id="demo1">
+                    <div class="moving-object" id="ball1" style="left: 50px; top: 120px;">⚡</div>
+                </div>
+                <button class="control-btn" onclick="moveBall1()">Cast Locomotor Charm</button>
+                <button class="control-btn" onclick="stopBall1()">Cast Immobulus</button>
+                <button class="control-btn" onclick="resetDemo1()">Reset</button>
+                <p style="margin-top: 15px; color: #b8860b;">The Golden Snitch will continue moving until you cast a stopping spell!</p>
+            </div>
+
+            <div class="problem-section">
+                <div class="problem-title">🧙‍♀️ Practical Problem: Hagrid's Motorcycle</div>
+                <div class="problem-text">
+                    Hagrid is riding his enchanted motorcycle at a constant velocity of 60 km/h through the Forbidden Forest. 
+                    If the motorcycle has a mass of 300 kg and Hagrid weighs 150 kg, what is the net force acting on the system?
+                </div>
+                <button class="show-solution-btn" onclick="toggleSolution('sol1')">Reveal Solution</button>
+                <div class="solution" id="sol1">
+                    <strong>Solution:</strong><br>
+                    Since the motorcycle is moving at constant velocity, acceleration = 0 m/s²<br>
+                    Using Newton's First Law: F_net = ma = (300 + 150) kg × 0 m/s² = 0 N<br>
+                    <strong>Answer: The net force is 0 N (forces are balanced)</strong><br><br>
+                    <em>This demonstrates inertia - no net force is needed for constant velocity motion!</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- Law 2 Detail -->
+        <div class="law-detail" id="law2">
+            <button class="back-btn" onclick="showMenu()">← Back to Spellbook</button>
+            <h2 style="color: #d4af37; text-align: center; margin-bottom: 20px;">Second Law of Motion - Force & Acceleration</h2>
+            
+            <div class="law-statement">
+                "The acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass. F = ma"
+            </div>
+
+            <div class="interactive-demo">
+                <div class="demo-title">🪄 Wingardium Leviosa Demonstration</div>
+                <div class="demo-area" id="demo2">
+                    <div class="moving-object" id="feather" style="left: 100px; top: 250px; background: #fff; color: #000;">🪶</div>
+                    <div class="force-arrow" id="arrow1" style="left: 115px; top: 200px;"></div>
+                </div>
+                <button class="control-btn" onclick="applyForce('small')">Weak Spell (2N)</button>
+                <button class="control-btn" onclick="applyForce('medium')">Medium Spell (5N)</button>
+                <button class="control-btn" onclick="applyForce('strong')">Strong Spell (10N)</button>
+                <button class="control-btn" onclick="resetDemo2()">Reset</button>
+                <p style="margin-top: 15px; color: #b8860b;">Notice how greater force creates greater acceleration!</p>
+            </div>
+
+            <div class="problem-section">
+                <div class="problem-title">⚡ Practical Problem: Harry's Firebolt</div>
+                <div class="problem-text">
+                    Harry's Firebolt broomstick (mass = 2 kg) accelerates from rest to 80 m/s in 4 seconds during a Quidditch match. 
+                    Calculate the thrust force produced by the broomstick's magic.
+                </div>
+                <button class="show-solution-btn" onclick="toggleSolution('sol2')">Reveal Solution</button>
+                <div class="solution" id="sol2">
+                    <strong>Solution:</strong><br>
+                    Given: m = 2 kg, initial velocity = 0 m/s, final velocity = 80 m/s, time = 4 s<br>
+                    First, find acceleration: a = (v_f - v_i)/t = (80 - 0)/4 = 20 m/s²<br>
+                    Using F = ma: F = 2 kg × 20 m/s² = 40 N<br>
+                    <strong>Answer: The magical thrust force is 40 N</strong><br><br>
+                    <em>This shows how force directly relates to acceleration!</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- Law 3 Detail -->
+        <div class="law-detail" id="law3">
+            <button class="back-btn" onclick="showMenu()">← Back to Spellbook</button>
+            <h2 style="color: #d4af37; text-align: center; margin-bottom: 20px;">Third Law of Motion - Action & Reaction</h2>
+            
+            <div class="law-statement">
+                "For every action, there is an equal and opposite reaction. The forces always occur in pairs and act on different objects."
+            </div>
+
+            <div class="interactive-demo">
+                <div class="demo-title">🚀 Wizard Duel Demonstration</div>
+                <div class="demo-area" id="demo3">
+                    <div class="moving-object" id="wizard1" style="left: 100px; top: 120px; background: #ff4444;">🧙‍♂️</div>
+                    <div class="moving-object" id="wizard2" style="right: 100px; top: 120px; background: #4444ff;">🧙‍♀️</div>
+                </div>
+                <button class="control-btn" onclick="castSpells()">Cast Expelliarmus!</button>
+                <button class="control-btn" onclick="resetDemo3()">Reset Duel</button>
+                <p style="margin-top: 15px; color: #b8860b;">Watch both wizards get pushed back with equal force!</p>
+            </div>
+
+            <div class="problem-section">
+                <div class="problem-title">🚂 Practical Problem: Hogwarts Express</div>
+                <div class="problem-text">
+                    The Hogwarts Express (mass = 500,000 kg) pushes against the tracks with a force of 200,000 N to accelerate forward. 
+                    What force do the tracks exert on the train, and in which direction?
+                </div>
+                <button class="show-solution-btn" onclick="toggleSolution('sol3')">Reveal Solution</button>
+                <div class="solution" id="sol3">
+                    <strong>Solution:</strong><br>
+                    According to Newton's Third Law, every action has an equal and opposite reaction.<br>
+                    Action: Train pushes tracks backward with 200,000 N<br>
+                    Reaction: Tracks push train forward with 200,000 N<br>
+                    <strong>Answer: The tracks exert 200,000 N forward on the train</strong><br><br>
+                    <em>This reaction force is what propels the train forward!</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function showLaw(lawNumber) {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('law' + lawNumber).style.display = 'block';
+            
+            // Reset any ongoing animations
+            resetAllDemos();
+        }
+
+        function showMenu() {
+            document.getElementById('menu').style.display = 'grid';
+            document.querySelectorAll('.law-detail').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            resetAllDemos();
+        }
+
+        function resetAllDemos() {
+            resetDemo1();
+            resetDemo2();
+            resetDemo3();
+        }
+
+        // Law 1 Demo Functions
+        function moveBall1() {
+            const ball = document.getElementById('ball1');
+            ball.style.left = '500px';
+        }
+
+        function stopBall1() {
+            const ball = document.getElementById('ball1');
+            ball.style.transition = 'none';
+            const currentLeft = ball.offsetLeft;
+            ball.style.left = currentLeft + 'px';
+            setTimeout(() => {
+                ball.style.transition = 'all 1s ease';
+            }, 50);
+        }
+
+        function resetDemo1() {
+            const ball = document.getElementById('ball1');
+            ball.style.left = '50px';
+            ball.style.top = '120px';
+        }
+
+        // Law 2 Demo Functions
+        function applyForce(magnitude) {
+            const feather = document.getElementById('feather');
+            const arrow = document.getElementById('arrow1');
+            
+            arrow.classList.add('visible');
+            
+            let distance;
+            switch(magnitude) {
+                case 'small': distance = 100; break;
+                case 'medium': distance = 200; break;
+                case 'strong': distance = 300; break;
+            }
+            
+            feather.style.top = (250 - distance) + 'px';
+            
+            setTimeout(() => {
+                arrow.classList.remove('visible');
+            }, 1500);
+        }
+
+        function resetDemo2() {
+            const feather = document.getElementById('feather');
+            const arrow = document.getElementById('arrow1');
+            feather.style.top = '250px';
+            arrow.classList.remove('visible');
+        }
+
+        // Law 3 Demo Functions
+        function castSpells() {
+            const wizard1 = document.getElementById('wizard1');
+            const wizard2 = document.getElementById('wizard2');
+            
+            wizard1.style.left = '20px';
+            wizard2.style.right = '20px';
+            
+            // Add spell effect
+            setTimeout(() => {
+                wizard1.innerHTML = '💥🧙‍♂️';
+                wizard2.innerHTML = '🧙‍♀️💥';
+            }, 200);
+            
+            setTimeout(() => {
+                wizard1.innerHTML = '🧙‍♂️';
+                wizard2.innerHTML = '🧙‍♀️';
+            }, 1500);
+        }
+
+        function resetDemo3() {
+            const wizard1 = document.getElementById('wizard1');
+            const wizard2 = document.getElementById('wizard2');
+            wizard1.style.left = '100px';
+            wizard2.style.right = '100px';
+            wizard1.innerHTML = '🧙‍♂️';
+            wizard2.innerHTML = '🧙‍♀️';
+        }
+
+        function toggleSolution(solutionId) {
+            const solution = document.getElementById(solutionId);
+            const button = event.target;
+            
+            if (solution.style.display === 'none' || !solution.style.display) {
+                solution.style.display = 'block';
+                button.textContent = 'Hide Solution';
+            } else {
+                solution.style.display = 'none';
+                button.textContent = 'Reveal Solution';
+            }
+        }
+
+        // Initialize the page
+        window.addEventListener('load', () => {
+            createStars();
+        });
+    </script>
+</body>
+</html>

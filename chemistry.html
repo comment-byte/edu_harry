@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Learning Lab</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;0,400;0,700&family=Cinzel:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Merriweather', serif;
+            background: #2b2b2b;
+            color: #dcdcdc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Magical background effects */
+        .sparkles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sparkle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: twinkle 10s infinite ease-in-out;
+            box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                transform: scale(0.5) rotate(0deg);
+                opacity: 0.2;
+            }
+            50% {
+                transform: scale(1) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Header */
+        .header {
+            background: #1a1a1a;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            color: #e6c271;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header h1::before {
+            content: '🧪';
+            font-size: 1.2em;
+            filter: drop-shadow(0 0 5px #e6c271);
+        }
+
+        .header h1::after {
+            content: '⚗️';
+            font-size: 1.2em;
+            filter: drop-shadow(0 0 5px #e6c271);
+        }
+
+        /* Mode selector */
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px auto;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            background: #3a3a3a;
+            color: #dcdcdc;
+            padding: 15px 30px;
+            border-radius: 5px;
+            border: 2px solid #555;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-family: 'Cinzel', serif;
+        }
+
+        .mode-btn.active, .mode-btn:hover {
+            background: #6a006a;
+            border-color: #e6c271;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(106, 0, 106, 0.5);
+            color: white;
+        }
+
+        /* Content sections */
+        .content-section {
+            display: none;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Theory section */
+        .theory-container {
+            background: #1a1a1a;
+            color: #dcdcdc;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .theory-container {
+                flex-direction: column;
+            }
+        }
+
+        .theory-column {
+            flex: 1;
+        }
+
+        .theory-column.column-border {
+            border-left: 2px solid #e6c271;
+            padding-left: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .theory-column.column-border {
+                border-left: none;
+                padding-left: 0;
+                border-top: 2px solid #e6c271;
+                padding-top: 40px;
+            }
+        }
+
+        .theory-container h2 {
+            color: #e6c271;
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            border-bottom: 2px solid #e6c271;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .theory-topic {
+            margin: 30px 0;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            border-left: 5px solid #e6c271;
+            transition: transform 0.3s ease;
+        }
+
+        .theory-topic:hover {
+            transform: translateX(5px);
+        }
+
+        .theory-topic h3 {
+            color: #dcdcdc;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theory-topic h3 .highlight, .theory-topic .highlight {
+            color: #e6c271;
+            font-weight: bold;
+            text-shadow: 0 0 5px #e6c271;
+        }
+
+        .theory-topic p {
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .formula-box {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            border: 1px dashed #6a006a;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            color: #dcdcdc;
+        }
+
+        /* Lab sections (Dark theme) */
+        .lab-container {
+            background: #1c1c1c;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #555;
+        }
+
+        .lab-title {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            color: #e6c271;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .lab-bench {
+            background: #333;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 550px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Lab Components - General */
+        .substance-shelf {
+            background: #4a3c2e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid #7a6c5e;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .substance {
+            width: 100px;
+            height: 120px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            position: relative;
+            border: 1px solid #555;
+            color: #dcdcdc;
+            font-family: 'Merriweather', serif;
+            padding: 10px;
+        }
+
+        .substance:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.7);
+            border-color: #e6c271;
+        }
+
+        .substance.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .substance-icon {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 5px #e6c271);
+        }
+
+        .substance-name {
+            font-size: 0.9em;
+            text-align: center;
+            font-weight: 600;
+            color: #dcdcdc;
+        }
+
+        /* Litmus Lab Components */
+        .litmus-area {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            min-height: 300px;
+            width: 100%;
+        }
+
+        .litmus-paper {
+            width: 150px;
+            height: 250px;
+            background: #dcdcdc;
+            border-radius: 0;
+            border: 2px solid #555;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.5s ease;
+        }
+
+        .litmus-paper-strip {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #87ceeb;
+            border-radius: 0;
+            transition: background-color 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            font-size: 1.5em;
+            color: #1a1a1a;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .litmus-paper.show-strip .litmus-paper-strip {
+            opacity: 1;
+        }
+
+        .litmus-paper-label {
+            position: absolute;
+            top: -30px;
+            font-size: 1em;
+            font-family: 'Cinzel', serif;
+            color: #e6c271;
+        }
+
+        .drop-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px dashed transparent;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.active {
+            border-color: #e6c271;
+            background: rgba(230, 194, 113, 0.1);
+        }
+
+        .ph-value {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            font-weight: bold;
+            color: #e6c271;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .ph-value.show {
+            opacity: 1;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border: 1px solid #555;
+            width: 100%;
+        }
+
+        .instructions h3 {
+            font-family: 'Cinzel', serif;
+            color: #e6c271;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instruction-step {
+            background: #333;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #6a006a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #dcdcdc;
+        }
+
+        .step-number {
+            background: #6a006a;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Reset and Action buttons */
+        .reset-btn, .action-btn {
+            background: #8b0000;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-family: 'Cinzel', serif;
+        }
+
+        .reset-btn:hover, .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.7);
+        }
+
+        /* Titration Lab CSS */
+        .titration-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            min-height: 500px;
+        }
+
+        .burette {
+            width: 40px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #555;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .burette-liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            background: #fff;
+            transition: height 0.5s ease-in-out;
+        }
+
+        .burette-tap {
+            width: 60px;
+            height: 20px;
+            background: #777;
+            border-radius: 10px;
+            position: absolute;
+            top: 290px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .burette-tap:hover {
+            background: #999;
+        }
+
+        .tap-knob {
+            width: 15px;
+            height: 30px;
+            background: #444;
+            border-radius: 5px;
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .tap-knob.open {
+            transform: translateX(-50%) rotate(90deg);
+        }
+
+        .conic-flask {
+            width: 150px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #555;
+            border-radius: 0 0 75px 75px;
+            position: absolute;
+            bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .flask-liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            background: #87ceeb;
+            transition: all 0.5s ease;
+            border-radius: 0 0 75px 75px;
+        }
+
+        .drop-zone-flask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px dashed transparent;
+            border-radius: 0 0 75px 75px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone-flask.active {
+            border-color: #e6c271;
+            background: rgba(230, 194, 113, 0.1);
+        }
+
+        .drop-zone-burette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px dashed transparent;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone-burette.active {
+            border-color: #e6c271;
+            background: rgba(230, 194, 113, 0.1);
+        }
+
+        .bubbles {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 80%;
+            height: 100%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: bubble-float 2s linear infinite;
+        }
+
+        @keyframes bubble-float {
+            0% { transform: translateY(0) scale(0); opacity: 0.8; }
+            100% { transform: translateY(-200px) scale(1); opacity: 0; }
+        }
+
+        .explosion {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,0,0,1) 0%, rgba(255,140,0,1) 50%, rgba(0,0,0,0) 100%);
+            border-radius: 50%;
+            animation: explode 0.5s forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes explode {
+            from { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            to { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        .message-box {
+            background: #2a2a2a;
+            color: #e6c271;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e6c271;
+            text-align: center;
+            font-family: 'Merriweather', serif;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message-box.show {
+            display: block;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="sparkles"></div>
+    
+    <header class="header">
+        <h1>Chemistry Learning Lab</h1>
+    </header>
+    
+    <div class="mode-selector">
+        <button class="mode-btn active" onclick="switchMode('theory')">
+            <span>📚 Theory Section</span>
+        </button>
+        <button class="mode-btn" onclick="switchMode('litmus-lab')">
+            <span>🧪 Litmus Test Lab</span>
+        </button>
+        <button class="mode-btn" onclick="switchMode('titration-lab')">
+            <span>🧪 Titration Lab</span>
+        </button>
+    </div>
+    
+    <div id="theory" class="content-section active">
+        <div class="theory-container">
+            <div class="theory-column">
+                <h2>Chemistry Fundamentals</h2>
+                
+                <div class="theory-topic">
+                    <h3>⚛️ <span class="highlight">Atoms</span> and <span class="highlight">Molecules</span></h3>
+                    <p>
+                        <span class="highlight">Atoms</span> are the basic building blocks of matter. They consist of a nucleus (containing protons and neutrons) 
+                        surrounded by electrons in orbital shells. When <span class="highlight">atoms</span> bond together, they form <span class="highlight">molecules</span>.
+                    </p>
+                    <div class="formula-box">
+                        Water Molecule: H₂O = 2 Hydrogen atoms + 1 Oxygen atom
+                    </div>
+                </div>
+                
+                <div class="theory-topic">
+                    <h3>🔬 <span class="highlight">Chemical Reactions</span></h3>
+                    <p>
+                        A <span class="highlight">chemical reaction</span> occurs when substances interact to form new substances with different properties. 
+                        During a reaction, bonds between atoms are broken and new bonds are formed.
+                    </p>
+                    <div class="formula-box">
+                        Example: 2H₂ + O₂ → 2H₂O (Formation of water)
+                    </div>
+                    <p>
+                        Key signs of chemical reactions include:
+                        • Color change
+                        • Temperature change
+                        • Gas production (bubbles)
+                        • Precipitate formation
+                    </p>
+                </div>
+                
+                <div class="theory-topic">
+                    <h3>⚗️ <span class="highlight">Acids and Bases</span></h3>
+                    <p>
+                        <span class="highlight">Acids</span> are substances that release hydrogen ions (H⁺) in solution, while <span class="highlight">bases</span> release hydroxide ions (OH⁻). 
+                        The <span class="highlight">pH scale</span> measures how acidic or basic a solution is, ranging from 0 (very acidic) to 14 (very basic).
+                    </p>
+                    <div class="formula-box">
+                        Neutralization: HCl + NaOH → NaCl + H₂O
+                    </div>
+                </div>
+            </div>
+            
+            <div class="theory-column column-border">
+                <h2>Crystallization Theory</h2>
+                <div class="theory-topic">
+                    <h3>💎 <span class="highlight">Crystallization</span></h3>
+                    <p>
+                        <span class="highlight">Crystallization</span> is a purification technique used to separate a solid substance from a solution. It relies on the principle that the solubility of most solids increases with temperature.
+                    </p>
+                    <div class="formula-box">
+                        Copper Sulphate Hydrate: CuSO₄ + 5H₂O → CuSO₄·5H₂O
+                    </div>
+                    <p>
+                        The process involves:
+                        • Dissolving the impure solid in a minimum amount of hot solvent to form a <span class="highlight">saturated solution</span>.
+                        • Filtering the hot solution to remove insoluble impurities.
+                        • Cooling the solution slowly, causing the substance to form pure <span class="highlight">crystals</span>.
+                        • The impurities remain dissolved in the solution (mother liquor).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="litmus-lab" class="content-section">
+        <div class="lab-container">
+            <h2 class="lab-title">Litmus Paper Test Lab</h2>
+            <div class="lab-bench">
+                <div class="substance-shelf">
+                    <div class="substance" draggable="true" data-ph="7" data-color="#dcdcdc">
+                        <div class="substance-icon">💧</div>
+                        <div class="substance-name">Water</div>
+                    </div>
+                    <div class="substance" draggable="true" data-ph="2.2" data-color="#ff4500">
+                        <div class="substance-icon">🍋</div>
+                        <div class="substance-name">Lemon Juice</div>
+                    </div>
+                    <div class="substance" draggable="true" data-ph="11.5" data-color="#4169e1">
+                        <div class="substance-icon">🧼</div>
+                        <div class="substance-name">Soap Solution</div>
+                    </div>
+                </div>
+
+                <div class="litmus-area">
+                    <div class="litmus-paper" id="litmusPaper">
+                        <div class="litmus-paper-label">Litmus Paper</div>
+                        <div class="litmus-paper-strip"></div>
+                        <div class="drop-zone"></div>
+                    </div>
+                    <div class="ph-value" id="phValue"></div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>📜 Litmus Test Instructions</h3>
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <span>Drag a liquid from the shelf and drop it onto the litmus paper.</span>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <span>Watch the litmus paper change color and reveal the pH value.</span>
+                </div>
+            </div>
+            
+            <button class="reset-btn" onclick="resetLitmusLab()">🔄 Reset Test</button>
+        </div>
+    </div>
+    
+    <div id="titration-lab" class="content-section">
+        <div class="lab-container">
+            <h2 class="lab-title">Titration Potion Lab</h2>
+            <div class="lab-bench">
+                <div class="substance-shelf">
+                    <div class="titration-item substance" draggable="true" data-item="hcl" data-type="acid">
+                        <div class="substance-icon">🔴</div>
+                        <div class="substance-name">HCl Acid</div>
+                    </div>
+                    <div class="titration-item substance" draggable="true" data-item="naoh" data-type="base">
+                        <div class="substance-icon">🔵</div>
+                        <div class="substance-name">NaOH Base</div>
+                    </div>
+                    <div class="titration-item substance" draggable="true" data-item="phenolphthalein" data-type="indicator">
+                        <div class="substance-icon">🔮</div>
+                        <div class="substance-name">Indicator</div>
+                    </div>
+                    <div class="titration-item substance" draggable="true" data-item="mystery" data-type="mystery">
+                        <div class="substance-icon">💥</div>
+                        <div class="substance-name">Mystery Potion</div>
+                    </div>
+                </div>
+
+                <div class="titration-container">
+                    <div class="burette-stand">
+                        <div class="burette" id="burette">
+                            <div class="burette-liquid" id="buretteLiquid"></div>
+                            <div class="drop-zone-burette" data-drop-zone="burette"></div>
+                            <div class="burette-tap" id="buretteTap">
+                                <div class="tap-knob" id="tapKnob"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="conic-flask" id="conicFlask">
+                        <div class="flask-liquid" id="flaskLiquid"></div>
+                        <div class="drop-zone-flask" data-drop-zone="flask"></div>
+                        <div class="bubbles" id="bubbles"></div>
+                    </div>
+                </div>
+
+                <div class="message-box" id="titrationMessage">
+                    Welcome to the Titration Lab!
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>📜 Titration Instructions</h3>
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <span>Drag HCl Acid into the flask.</span>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <span>Drag the Indicator into the flask.</span>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <span>Drag NaOH Base into the burette.</span>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">4</div>
+                    <span>Click the button that appears to begin titration.</span>
+                </div>
+            </div>
+            
+            <button class="action-btn" id="startTitrationBtn" style="display:none;">
+                Start Titration ✨
+            </button>
+            <button class="reset-btn" onclick="resetTitrationLab()">🔄 Reset Experiment</button>
+        </div>
+    </div>
+    
+    <script>
+        // Create background sparkles
+        function createSparkles() {
+            const sparklesContainer = document.querySelector('.sparkles');
+            sparklesContainer.innerHTML = ''; 
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.width = Math.random() * 5 + 2 + 'px';
+                sparkle.style.height = sparkle.style.width;
+                sparkle.style.animationDelay = Math.random() * 10 + 's';
+                sparkle.style.animationDuration = 5 + Math.random() * 5 + 's';
+                sparklesContainer.appendChild(sparkle);
+            }
+        }
+        
+        // Switch between modes
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="switchMode('${mode}')"]`).classList.add('active');
+            
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(mode).classList.add('active');
+            
+            if (mode === 'litmus-lab' || mode === 'titration-lab') {
+                createSparkles();
+            }
+        }
+        
+        // Litmus Lab Logic
+        const litmusPaper = document.getElementById('litmusPaper');
+        const litmusPaperStrip = litmusPaper.querySelector('.litmus-paper-strip');
+        const litmusDropZone = litmusPaper.querySelector('.drop-zone');
+        const phValueDisplay = document.getElementById('phValue');
+
+        document.querySelectorAll('.substance').forEach(substance => {
+            substance.addEventListener('dragstart', (e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.target.classList.add('dragging');
+                const ph = e.target.dataset.ph;
+                e.dataTransfer.setData('text/plain', ph);
+            });
+            
+            substance.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+
+        litmusDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            litmusDropZone.classList.add('active');
+        });
+        
+        litmusDropZone.addEventListener('dragleave', () => {
+            litmusDropZone.classList.remove('active');
+        });
+
+        litmusDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            litmusDropZone.classList.remove('active');
+            const ph = parseFloat(e.dataTransfer.getData('text/plain'));
+            updateLitmusTest(ph);
+        });
+
+        function updateLitmusTest(ph) {
+            let color;
+            let displayPh;
+            
+            if (ph < 7) {
+                color = '#ff4500';
+                displayPh = 'pH ' + ph.toFixed(1) + ' (Acidic)';
+            } else if (ph > 7) {
+                color = '#4169e1';
+                displayPh = 'pH ' + ph.toFixed(1) + ' (Basic)';
+            } else {
+                color = '#dcdcdc';
+                displayPh = 'pH ' + ph.toFixed(1) + ' (Neutral)';
+            }
+
+            litmusPaperStrip.style.backgroundColor = color;
+            phValueDisplay.textContent = displayPh;
+            
+            litmusPaper.classList.add('show-strip');
+            phValueDisplay.classList.add('show');
+        }
+
+        function resetLitmusLab() {
+            litmusPaper.classList.remove('show-strip');
+            phValueDisplay.classList.remove('show');
+            litmusPaperStrip.style.backgroundColor = '#87ceeb';
+            phValueDisplay.textContent = '';
+        }
+
+        // Titration Lab Logic
+        const titrationFlask = document.getElementById('conicFlask');
+        const flaskLiquid = document.getElementById('flaskLiquid');
+        const burette = document.getElementById('burette');
+        const buretteLiquid = document.getElementById('buretteLiquid');
+        const buretteTap = document.getElementById('buretteTap');
+        const tapKnob = document.getElementById('tapKnob');
+        const titrationMessage = document.getElementById('titrationMessage');
+        const bubblesContainer = document.getElementById('bubbles');
+        const startTitrationBtn = document.getElementById('startTitrationBtn');
+
+        let isHClAdded = false;
+        let isIndicatorAdded = false;
+        let isNaOHInBurette = false;
+        let isTitrating = false;
+
+        function updateTitrationMessage(text) {
+            titrationMessage.textContent = text;
+            titrationMessage.classList.add('show');
+        }
+
+        // Handle drag and drop for titration items
+        document.querySelectorAll('.titration-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', e.target.dataset.item);
+                e.dataTransfer.setData('type', e.target.dataset.type);
+            });
+
+            item.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+
+        // Flask drop zone
+        const flaskDropZone = document.querySelector('.drop-zone-flask');
+        flaskDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            flaskDropZone.classList.add('active');
+        });
+
+        flaskDropZone.addEventListener('dragleave', () => {
+            flaskDropZone.classList.remove('active');
+        });
+
+        flaskDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            flaskDropZone.classList.remove('active');
+            const item = e.dataTransfer.getData('text/plain');
+            const type = e.dataTransfer.getData('type');
+            handleFlaskDrop(item, type);
+        });
+
+        // Burette drop zone
+        const buretteDropZone = document.querySelector('.drop-zone-burette');
+        buretteDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            buretteDropZone.classList.add('active');
+        });
+
+        buretteDropZone.addEventListener('dragleave', () => {
+            buretteDropZone.classList.remove('active');
+        });
+
+        buretteDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            buretteDropZone.classList.remove('active');
+            const item = e.dataTransfer.getData('text/plain');
+            const type = e.dataTransfer.getData('type');
+            handleBuretteDrop(item, type);
+        });
+        
+        // Start button functionality
+        startTitrationBtn.addEventListener('click', () => {
+            if (!isTitrating && isHClAdded && isIndicatorAdded && isNaOHInBurette) {
+                isTitrating = true;
+                tapKnob.classList.add('open');
+                startTitration();
+                startTitrationBtn.style.display = 'none';
+            }
+        });
+
+        function handleFlaskDrop(item, type) {
+            if (isTitrating) return;
+            if (item === 'hcl' && !isHClAdded) {
+                isHClAdded = true;
+                addHClToFlask();
+                updateTitrationMessage('Good! Now add the Indicator to the flask.');
+            } else if (item === 'phenolphthalein' && isHClAdded && !isIndicatorAdded) {
+                isIndicatorAdded = true;
+                addIndicatorToFlask();
+                updateTitrationMessage('Perfect! Now drag NaOH Base into the burette.');
+            } else if (item === 'mystery') {
+                handleMysteryChemical();
+            } else if (item === 'naoh') {
+                updateTitrationMessage('❌ NaOH Base should go in the burette!');
+            } else if (item === 'hcl' && isHClAdded) {
+                updateTitrationMessage('❌ HCl is already in the flask!');
+            } else if (item === 'phenolphthalein' && !isHClAdded) {
+                updateTitrationMessage('❌ Add HCl Acid to the flask first!');
+            } else if (item === 'phenolphthalein' && isIndicatorAdded) {
+                updateTitrationMessage('❌ Indicator is already added!');
+            }
+        }
+
+        function handleBuretteDrop(item, type) {
+            if (isTitrating) return;
+            if (item === 'naoh' && !isNaOHInBurette) {
+                isNaOHInBurette = true;
+                addNaOHToBurette();
+                updateTitrationMessage('Excellent! Click the new button to start the titration.');
+                startTitrationBtn.style.display = 'block'; 
+            } else if (item === 'naoh' && isNaOHInBurette) {
+                updateTitrationMessage('❌ NaOH is already in the burette!');
+            } else {
+                updateTitrationMessage('❌ Only NaOH Base should go in the burette!');
+            }
+        }
+
+        function addHClToFlask() {
+            flaskLiquid.style.height = '40%';
+            flaskLiquid.style.background = '#87ceeb';
+        }
+
+        function addIndicatorToFlask() {
+            flaskLiquid.style.transition = 'all 0.2s ease-in-out';
+            flaskLiquid.style.background = '#fff';
+            setTimeout(() => {
+                flaskLiquid.style.background = '#87ceeb';
+            }, 200);
+        }
+
+        function addNaOHToBurette() {
+            let currentHeight = 0;
+            const interval = setInterval(() => {
+                if (currentHeight >= 100) {
+                    clearInterval(interval);
+                } else {
+                    currentHeight += 2;
+                    buretteLiquid.style.height = `${currentHeight}%`;
+                }
+            }, 20);
+
+            buretteLiquid.style.background = '#f2a6a6';
+        }
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 10 + 5 + 'px';
+            bubble.style.width = size;
+            bubble.style.height = size;
+            bubble.style.left = Math.random() * 80 + 10 + '%';
+            bubblesContainer.appendChild(bubble);
+
+            setTimeout(() => {
+                bubble.remove();
+            }, 2000);
+        }
+
+        function startTitration() {
+            // Animate the tap knob to the open position
+            tapKnob.classList.add('open');
+
+            // Simulate an initial, quick fill
+            buretteLiquid.style.height = '90%';
+            flaskLiquid.style.height = '45%';
+            flaskLiquid.style.background = '#87ceeb';
+
+            updateTitrationMessage('Titration has started... drip by drip!');
+
+            // After a brief delay, start the main titration process
+            setTimeout(() => {
+                let volume = 90;
+                const endpoint = 40;
+                const interval = setInterval(() => {
+                    volume -= 1;
+                    buretteLiquid.style.height = (volume / 100) * 100 + '%';
+
+                    if (volume <= endpoint) {
+                        flaskLiquid.style.background = '#ff00ff';
+                        updateTitrationMessage('✅ Endpoint reached! The solution is now neutral!');
+                        clearInterval(interval);
+                        isTitrating = false;
+                        tapKnob.classList.remove('open');
+                    } else {
+                        flaskLiquid.style.background = `hsl(240, 50%, ${10 + (100 - volume) / 2}%)`;
+                        createBubble();
+                    }
+
+                    if (volume <= 0) {
+                        clearInterval(interval);
+                        isTitrating = false;
+                        tapKnob.classList.remove('open');
+                        updateTitrationMessage('Burette is empty, but no endpoint reached! Try again.');
+                    }
+                }, 100);
+            }, 500);
+        }
+
+        function handleMysteryChemical() {
+            flaskLiquid.style.height = '100%';
+            titrationFlask.style.transition = 'all 0.5s ease';
+            titrationFlask.style.transform = 'scale(1.2)';
+            titrationFlask.classList.add('shake');
+            updateTitrationMessage('💥 BOOM! That was the wrong element! 💥');
+            
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            titrationFlask.appendChild(explosion);
+
+            setTimeout(() => {
+                titrationFlask.classList.remove('shake');
+                titrationFlask.style.transform = 'scale(1)';
+                explosion.remove();
+            }, 500);
+        }
+
+        function resetTitrationLab() {
+            isHClAdded = false;
+            isIndicatorAdded = false;
+            isNaOHInBurette = false;
+            isTitrating = false;
+            flaskLiquid.style.height = '0%';
+            flaskLiquid.style.background = '#87ceeb';
+            buretteLiquid.style.height = '0%';
+            tapKnob.classList.remove('open');
+            titrationMessage.textContent = 'Welcome to the Titration Lab!';
+            buretteLiquid.style.background = '#fff';
+            bubblesContainer.innerHTML = '';
+            startTitrationBtn.style.display = 'none'; 
+        }
+
+        // Initial setup
+        createSparkles();
+    </script>
+</body>
+</html>

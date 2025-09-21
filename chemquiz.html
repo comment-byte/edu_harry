@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizarding World Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Crimson Text', serif;
+      background: #0a0a0a;
+      color: #d4af37;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(30, 144, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+      animation: mysticalPulse 15s ease-in-out infinite;
+      z-index: -2;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(180deg, #0a0a0a 0%, #1a0f2e 50%, #0a0a0a 100%);
+      opacity: 0.9;
+      z-index: -1;
+    }
+
+    @keyframes mysticalPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* Floating Particles */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 100;
+    }
+
+    .particle.star {
+      width: 2px;
+      height: 2px;
+      background: #ffd700;
+      box-shadow: 0 0 6px #ffd700;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 600;
+      color: #d4af37;
+      text-shadow: 
+        0 0 20px rgba(212, 175, 55, 0.5),
+        0 0 40px rgba(212, 175, 55, 0.3),
+        2px 2px 4px #000;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3), 2px 2px 4px #000; }
+      to { text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 50px rgba(212, 175, 55, 0.5), 2px 2px 4px #000; }
+    }
+
+    .house-badges {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .house-badge {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      border-radius: 50%;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 0.2s);
+    }
+
+    .house-badge::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, transparent 30%, currentColor 70%);
+      opacity: 0.2;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(10deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.2); opacity: 0.1; }
+    }
+
+    .gryffindor { color: #740001; }
+    .slytherin { color: #1a472a; }
+    .ravenclaw { color: #0e1a40; }
+    .hufflepuff { color: #ecb939; }
+
+    /* Quiz Container */
+    .quiz-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .question-card {
+      background: linear-gradient(135deg, rgba(26, 15, 46, 0.9), rgba(10, 10, 10, 0.9));
+      border: 2px solid transparent;
+      border-image: linear-gradient(45deg, #d4af37, #8b6914) 1;
+      border-radius: 15px;
+      padding: 2.5rem;
+      box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.7),
+        inset 0 0 60px rgba(212, 175, 55, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .question-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: #8b6914;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .question-text {
+      font-size: 1.6rem;
+      color: #f4e4c1;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .math-input-container {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .math-input {
+        width: 100%;
+        padding: 1.2rem;
+        background: rgba(26, 15, 46, 0.6);
+        border: 1px solid #d4af37;
+        border-radius: 10px;
+        color: #f4e4c1;
+        font-family: 'Crimson Text', serif;
+        font-size: 1.2rem;
+        text-align: center;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .math-input:focus {
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    }
+
+    .math-submit-btn {
+      background: linear-gradient(135deg, #d4af37, #8b6914);
+      border: none;
+      color: #1a0f2e;
+      padding: 1rem 3rem;
+      font-size: 1.2rem;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .math-submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(26, 15, 46, 0.5);
+      border-radius: 3px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #d4af37, #ffd700);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+
+    /* Results Screen */
+    .results-screen {
+      background: linear-gradient(135deg, rgba(26, 15, 46, 0.95), rgba(10, 10, 10, 0.95));
+      border: 2px solid #d4af37;
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        inset 0 0 100px rgba(212, 175, 55, 0.1);
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(139, 105, 20, 0.1) 0%, transparent 50%);
+      animation: swirl 10s linear infinite;
+    }
+
+    @keyframes swirl {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .score-display {
+      font-family: 'Cinzel', serif;
+      font-size: 4rem;
+      color: #ffd700;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      margin: 1rem 0;
+    }
+
+    .stars-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .star-rating {
+      font-size: 3rem;
+      color: #333;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .star-rating.filled {
+      color: #ffd700;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+      animation: starPop 0.5s ease;
+    }
+
+    @keyframes starPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    .result-message {
+      font-size: 1.4rem;
+      color: #f4e4c1;
+      margin: 2rem 0;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #d4af37, #8b6914);
+      border: none;
+      color: #1a0f2e;
+      padding: 1rem 3rem;
+      font-size: 1.2rem;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .restart-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+    }
+
+    /* Magical Sprinkles */
+    .sprinkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      animation: sprinkleFall 2s linear forwards;
+    }
+
+    @keyframes sprinkleFall {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Wand Cursor Trail */
+    .wand-trail {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle, #ffd700, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: scale(3); }
+    }
+
+    /* Floating Icons */
+    .floating-icon {
+      position: fixed;
+      font-size: 1.5rem;
+      opacity: 0.1;
+      animation: floatAround 20s infinite linear;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes floatAround {
+      0% { transform: translate(0, 100vh) rotate(0deg); }
+      100% { transform: translate(100vw, -100px) rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-icon" style="left: 10%; animation-delay: 0s;">⚡</div>
+  <div class="floating-icon" style="left: 30%; animation-delay: 5s;">🦉</div>
+  <div class="floating-icon" style="left: 50%; animation-delay: 10s;">🪄</div>
+  <div class="floating-icon" style="left: 70%; animation-delay: 15s;">📜</div>
+  <div class="floating-icon" style="left: 90%; animation-delay: 20s;">🏰</div>
+
+  <div class="header">
+    <h1>✨ MAGICAL MATH QUIZ ✨</h1>
+    <div class="house-badges">
+      <div class="house-badge gryffindor" style="--i: 0">🦁</div>
+      <div class="house-badge slytherin" style="--i: 1">🐍</div>
+      <div class="house-badge ravenclaw" style="--i: 2">🦅</div>
+      <div class="house-badge hufflepuff" style="--i: 3">🦡</div>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <div id="quizArea">
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="question-card" id="questionCard"></div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="font-family: 'Cinzel', serif; font-size: 2rem; margin-bottom: 1rem;">✨ QUIZ COMPLETE ✨</h2>
+      <div class="stars-container" id="starsContainer"></div>
+      <div class="score-display" id="scoreDisplay">0%</div>
+      <p class="result-message" id="resultMessage"></p>
+      <button class="restart-btn" onclick="restartQuiz()">Cast Again</button>
+    </div>
+  </div>
+
+  <div id="particlesContainer"></div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is 2 + 2?",
+        answer: "4"
+      },
+      {
+        question: "What is 10 - 3?",
+        answer: "7"
+      },
+      {
+        question: "What is 5 * 5?",
+        answer: "25"
+      },
+      {
+        question: "What is 12 / 3?",
+        answer: "4"
+      },
+      {
+        question: "What is 6 + 7?",
+        answer: "13"
+      },
+      {
+        question: "What is 20 - 9?",
+        answer: "11"
+      },
+      {
+        question: "What is 8 * 4?",
+        answer: "32"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let userAnswers = [];
+
+    function createBackgroundParticles() {
+      const container = document.getElementById('particlesContainer');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle star';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 3 + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    function loadQuestion() {
+      const questionCard = document.getElementById('questionCard');
+      const progressBar = document.getElementById('progressBar');
+      
+      if (currentQuestion < quizData.length) {
+        const q = quizData[currentQuestion];
+        progressBar.style.width = ((currentQuestion / quizData.length) * 100) + '%';
+        
+        questionCard.innerHTML = `
+          <div class="question-number">QUESTION ${currentQuestion + 1} OF ${quizData.length}</div>
+          <h2 class="question-text">${q.question}</h2>
+          <div class="math-input-container">
+            <input type="number" class="math-input" id="mathInput" placeholder="Enter your answer...">
+            <button class="math-submit-btn" onclick="submitAnswer()">Submit</button>
+          </div>
+        `;
+        
+        questionCard.style.animation = 'none';
+        setTimeout(() => {
+          questionCard.style.animation = 'fadeIn 0.5s ease';
+          document.getElementById('mathInput').focus();
+        }, 10);
+      } else {
+        showResults();
+      }
+    }
+
+    function submitAnswer() {
+      const mathInput = document.getElementById('mathInput');
+      const userAnswer = mathInput.value.trim();
+      const correctAnswer = quizData[currentQuestion].answer;
+
+      userAnswers.push(userAnswer);
+
+      if (userAnswer === correctAnswer) {
+        score++;
+        createMagicalEffect();
+      }
+      currentQuestion++;
+      loadQuestion();
+    }
+    
+    function createMagicalEffect() {
+      for (let i = 0; i < 10; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'wand-trail';
+        spark.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 200) + 'px';
+        spark.style.top = (window.innerHeight / 2 + (Math.random() - 0.5) * 200) + 'px';
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 1000);
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quizArea').style.display = 'none';
+      document.getElementById('resultsScreen').style.display = 'block';
+      
+      const percentage = Math.round((score / quizData.length) * 100);
+      const scoreDisplay = document.getElementById('scoreDisplay');
+      const starsContainer = document.getElementById('starsContainer');
+      const resultMessage = document.getElementById('resultMessage');
+      
+      let currentScore = 0;
+      const scoreInterval = setInterval(() => {
+        currentScore += 2;
+        if (currentScore >= percentage) {
+          currentScore = percentage;
+          clearInterval(scoreInterval);
+        }
+        scoreDisplay.textContent = currentScore + '%';
+      }, 20);
+      
+      const starCount = Math.ceil((percentage / 100) * 5);
+      starsContainer.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const star = document.createElement('span');
+          star.className = 'star-rating' + (i < starCount ? ' filled' : '');
+          star.innerHTML = '⭐';
+          starsContainer.appendChild(star);
+        }, i * 200);
+      }
+      
+      if (percentage === 100) {
+        resultMessage.innerHTML = "🏆 Outstanding! You've earned the House Cup! The prophecy speaks of your greatness!";
+        createCelebration();
+      } else if (percentage >= 80) {
+        resultMessage.innerHTML = "✨ Brilliant work! Dumbledore awards you 100 house points!";
+        createCelebration();
+      } else if (percentage >= 60) {
+        resultMessage.innerHTML = "🪄 Well done! You show great promise, young wizard!";
+        createSprinkles();
+      } else if (percentage >= 40) {
+        resultMessage.innerHTML = "📚 Good effort! A few more trips to the library will help!";
+      } else {
+        resultMessage.innerHTML = "🦉 Keep practicing! Even Hermione had to study hard!";
+      }
+    }
+
+    function createCelebration() {
+      const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const sprinkle = document.createElement('div');
+          sprinkle.className = 'sprinkle';
+          sprinkle.style.width = '8px';
+          sprinkle.style.height = '8px';
+          sprinkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          sprinkle.style.left = Math.random() * 100 + '%';
+          sprinkle.style.top = '-20px';
+          sprinkle.style.borderRadius = '50%';
+          sprinkle.style.boxShadow = `0 0 6px ${sprinkle.style.background}`;
+          document.body.appendChild(sprinkle);
+          setTimeout(() => sprinkle.remove(), 2000);
+        }, i * 50);
+      }
+    }
+
+    function createSprinkles() {
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const sprinkle = document.createElement('div');
+          sprinkle.className = 'sprinkle';
+          sprinkle.innerHTML = '✨';
+          sprinkle.style.fontSize = '20px';
+          sprinkle.style.left = Math.random() * 100 + '%';
+          sprinkle.style.top = '-20px';
+          document.body.appendChild(sprinkle);
+          setTimeout(() => sprinkle.remove(), 2000);
+        }, i * 100);
+      }
+    }
+
+    function restartQuiz() {
+      score = 0;
+      currentQuestion = 0;
+      userAnswers = [];
+      document.getElementById('quizArea').style.display = 'block';
+      document.getElementById('resultsScreen').style.display = 'none';
+      loadQuestion();
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (Math.random() > 0.9) {
+        const trail = document.createElement('div');
+        trail.className = 'wand-trail';
+        trail.style.left = e.clientX + 'px';
+        trail.style.top = e.clientY + 'px';
+        document.body.appendChild(trail);
+        setTimeout(() => trail.remove(), 1000);
+      }
+    });
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    createBackgroundParticles();
+    loadQuestion();
+  </script>
+</body>
+</html>

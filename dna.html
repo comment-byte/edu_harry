@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DNA Pairing — Hogwarts Edition (Fixed)</title>
+  <!-- Google font for a magical look -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --parchment:#2b1b17;
+      --gold:#d4af37;
+      --accent: #00ffcc;
+      --glass: rgba(255,255,255,0.04);
+      --soft: rgba(0,0,0,0.45);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: 'Cinzel', Georgia, serif;
+      background-color:var(--parchment);
+      background-image: url("https://wallpapers.com/images/hd/hogwarts-castle-0f0g45ihwlijl35w.jpg");
+      object-fit: cover;
+      color:#f5e6cc;
+      -webkit-font-smoothing:antialiased;
+      text-align:center;
+      padding:18px;
+    }
+
+    header{margin-bottom:6px}
+    h1{
+      font-size:28px;
+      margin:10px 0 4px;
+      color:var(--gold);
+      text-shadow:0 0 10px rgba(212,175,55,0.25);
+    }
+
+    .meta{margin-bottom:14px; font-size:16px; color:#fff}
+
+    .scoreboard{display:flex;gap:16px;justify-content:center;align-items:center;margin-bottom:12px}
+    .pill{background:var(--soft);padding:8px 12px;border-radius:10px;font-weight:600}
+
+    /* Helix area */
+    .helix-wrap{display:flex;justify-content:center;align-items:flex-start;gap:40px;flex-wrap:wrap}
+    .strand{display:flex;flex-direction:column;gap:16px;align-items:center}
+
+    .left-base{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(180deg,#4b3b33,#2f241f);box-shadow:0 6px 18px rgba(0,0,0,0.6);color:#fff}
+
+    .dropzone{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px dashed rgba(255,255,255,0.12);background:var(--glass);min-width:64px;min-height:64px}
+
+    .dropzone.correct{background:linear-gradient(180deg,#164a2f,#1f7a46);box-shadow:0 0 14px rgba(46,204,113,0.35);color:#fff;border:0}
+    .dropzone.wrong{background:linear-gradient(180deg,#541111,#7a1a1a);box-shadow:0 0 14px rgba(255,0,0,0.25);color:#fff;border:0}
+
+    /* A subtle 3D twist effect around the helix */
+    .helix{transform-style:preserve-3d;animation:spin 12s linear infinite}
+    @keyframes spin{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+
+    /* Pool of draggable bases */
+    .pool{margin-top:20px;display:flex;gap:12px;justify-content:center;align-items:center}
+    .pool .base{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:#2f3940;color:#fff;cursor:grab;box-shadow:0 6px 12px rgba(0,0,0,0.6)}
+
+    .controls{margin-top:18px;display:flex;gap:12px;justify-content:center}
+    button{background:var(--gold);color:#1b120f;border:0;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.4)}
+    button:disabled{opacity:0.45;cursor:not-allowed}
+
+    .info{max-width:780px;margin:22px auto 0;background:rgba(0,0,0,0.45);padding:14px;border-radius:12px}
+
+    /* small screens */
+    @media (max-width:520px){
+      .helix-wrap{gap:20px}
+      .left-base,.dropzone{width:52px;height:52px;font-size:18px}
+      .pool .base{width:48px;height:48px}
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DNA Pairing — Hogwarts Edition ✨</h1>
+    <div class="meta">Drag bases from the <strong>base pool</strong> (below) onto the right strand to pair with the left strand.</div>
+  </header>
+
+  <div class="scoreboard">
+    <div class="pill">Score: <span id="score">0</span></div>
+    <div class="pill">Level: <span id="level">1</span></div>
+    <div class="pill">Pairs: <span id="pair-count">0</span></div>
+  </div>
+
+  <main>
+    <div class="helix-wrap helix" id="helix">
+      <div class="strand" id="left-strand" aria-hidden="true"></div>
+      <div class="strand" id="right-strand"></div>
+    </div>
+
+    <div class="pool" aria-label="Base pool">
+      <!-- these are the draggable bases (unlimited use) -->
+      <div class="base" draggable="true" data-base="A">A</div>
+      <div class="base" draggable="true" data-base="T">T</div>
+      <div class="base" draggable="true" data-base="G">G</div>
+      <div class="base" draggable="true" data-base="C">C</div>
+    </div>
+
+    <div class="controls">
+      <button id="resetBtn">Reset Level</button>
+      <button id="nextBtn" disabled>Next Level (complete all correctly)</button>
+    </div>
+
+    <div class="info" id="info">
+      <strong id="fact">DNA is double-stranded and uses A-T and G-C base pairing.</strong>
+      <p style="margin:8px 0 0;">Tip: You can replace a placed base by dragging a different base onto the same spot. Score updates correctly when you replace.</p>
+    </div>
+
+  </main>
+
+  <!-- sounds -->
+  <audio id="soundCorrect" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+  <audio id="soundWrong" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+
+  <script>
+    // --- Game data & elements ---
+    const bases = ['A','T','G','C'];
+    const pairs = { A:'T', T:'A', G:'C', C:'G' };
+
+    const leftStrand = document.getElementById('left-strand');
+    const rightStrand = document.getElementById('right-strand');
+    const scoreEl = document.getElementById('score');
+    const levelEl = document.getElementById('level');
+    const pairCountEl = document.getElementById('pair-count');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const factEl = document.getElementById('fact');
+
+    const soundCorrect = document.getElementById('soundCorrect');
+    const soundWrong = document.getElementById('soundWrong');
+
+    // gameplay state
+    let score = 0;
+    let level = 1;
+    let placed = []; // array of objects for each zone: {status: 'correct'|'wrong'|null, base: 'A'}
+    let expected = []; // expected complementary base for each zone
+
+    // facts per level
+    const facts = [
+      'DNA is double-stranded and uses A-T and G-C base pairing.',
+      'RNA is single-stranded and uses U instead of T (A pairs with U).',
+      'Each base pair is held by hydrogen bonds — a molecular kind of magic!',
+      "You share lots of DNA with other living things — humans and bananas share many base sequences.",
+      'Changing the order of bases can change how proteins are made, which can affect traits.'
+    ];
+
+    // --- Utilities ---
+    function randChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function updateScoreDisplay(){ scoreEl.textContent = score; }
+    function updateLevelDisplay(){ levelEl.textContent = level; }
+
+    function generateLevel(){
+      // clear
+      leftStrand.innerHTML = '';
+      rightStrand.innerHTML = '';
+      placed = [];
+      expected = [];
+
+      // determine number of pairs (keep reasonable limits)
+      const pairCount = Math.min(10, 3 + level + Math.floor(level/2));
+      pairCountEl.textContent = pairCount;
+
+      // create sequence on left and empty dropzones on right
+      for(let i=0;i<pairCount;i++){
+        const b = randChoice(bases);
+        expected.push(pairs[b]); // the base that must be placed on the right
+
+        // left base (informational — not draggable)
+        const lb = document.createElement('div');
+        lb.className = 'left-base';
+        lb.textContent = b;
+        leftStrand.appendChild(lb);
+
+        // right dropzone
+        const dz = document.createElement('div');
+        dz.className = 'dropzone';
+        dz.setAttribute('data-index', i);
+        dz.setAttribute('data-pair', pairs[b]);
+        dz.setAttribute('aria-label', `Drop zone ${i+1}`);
+
+        // set initial placed state
+        placed.push({status:null, base:null});
+
+        // dragover & drop
+        dz.addEventListener('dragover', e=> e.preventDefault());
+        dz.addEventListener('drop', handleDrop);
+
+        rightStrand.appendChild(dz);
+      }
+
+      // reset Next button until all correct
+      nextBtn.disabled = true;
+
+      // show fact for this level if present
+      factEl.textContent = facts[Math.min(level-1, facts.length-1)];
+    }
+
+    // --- Drag setup for pool bases ---
+    document.querySelectorAll('.pool .base').forEach(el=>{
+      el.addEventListener('dragstart', e=>{
+        const b = el.dataset.base;
+        // set data; use text/plain for compatibility
+        e.dataTransfer.setData('text/plain', b);
+        // show the letter while dragging (some browsers use drag image)
+        const crt = el.cloneNode(true);
+        crt.style.position='absolute'; crt.style.top='-1000px';
+        document.body.appendChild(crt);
+        e.dataTransfer.setDragImage(crt, 28,28);
+        // remove the temporary drag image after a tick
+        setTimeout(()=> document.body.removeChild(crt),100);
+      });
+
+      // allow keyboard accessibility (optional)
+      el.addEventListener('keydown', e=>{
+        if(e.key === ' ' || e.key === "Enter"){
+          e.preventDefault();
+        }
+      });
+    });
+
+    // --- Drop handler with correct replacement & scoring logic ---
+    function handleDrop(e){
+      e.preventDefault();
+      const dropped = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text');
+      if(!dropped) return;
+      const dz = e.currentTarget;
+      const idx = Number(dz.getAttribute('data-index'));
+      const expectedBase = dz.getAttribute('data-pair');
+
+      const prev = placed[idx];
+      // revert score from previous placement if any
+      let delta = 0;
+      if(prev && prev.status){
+        if(prev.status === 'correct') delta -= 10; // remove previous correct points
+        else if(prev.status === 'wrong') delta += 5; // undo previous wrong penalty
+      }
+
+      // determine new status
+      const newStatus = (dropped === expectedBase) ? 'correct' : 'wrong';
+      if(newStatus === 'correct') delta += 10; else delta -= 5;
+
+      score += delta;
+      updateScoreDisplay();
+
+      // update UI classes & stored state
+      dz.classList.remove('correct','wrong');
+      if(newStatus === 'correct') dz.classList.add('correct'); else dz.classList.add('wrong');
+      dz.textContent = dropped;
+      placed[idx] = { status:newStatus, base:dropped };
+
+      // play sounds
+      try{ if(newStatus === 'correct') soundCorrect.play(); else soundWrong.play(); }catch(e){}
+
+      // check if level is complete
+      checkLevelComplete();
+    }
+
+    function checkLevelComplete(){
+      const allPlacedCorrect = placed.length > 0 && placed.every(p => p.status === 'correct');
+      nextBtn.disabled = !allPlacedCorrect;
+      if(allPlacedCorrect){
+        // small bonus for clearing level
+        score += 20; updateScoreDisplay();
+        // visual celebration (simple)
+        factEl.textContent = 'Level cleared! Click Next Level to continue your magical journey.';
+      }
+    }
+
+    // reset current level placements (score unaffected)
+    function resetLevel(){
+      // clear UI and placed states (but keep score & level)
+      document.querySelectorAll('.dropzone').forEach(dz=>{ dz.textContent = ''; dz.classList.remove('correct','wrong'); });
+      placed = placed.map(()=>({status:null, base:null}));
+      nextBtn.disabled = true;
+      factEl.textContent = facts[Math.min(level-1, facts.length-1)];
+    }
+
+    function nextLevel(){
+      level++;
+      updateLevelDisplay();
+      generateLevel();
+    }
+
+    // --- control wiring ---
+    resetBtn.addEventListener('click', ()=>{
+      resetLevel();
+    });
+
+    nextBtn.addEventListener('click', ()=>{
+      if(nextBtn.disabled) return;
+      nextLevel();
+    });
+
+    // init
+    updateScoreDisplay(); updateLevelDisplay();
+    generateLevel();
+  </script>
+</body>
+</html>

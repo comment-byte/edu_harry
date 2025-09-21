@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hogwarts Marks Viewer</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Spectral+SC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Spectral SC', serif;
+      background: #1b1b1b url('https://www.transparenttextures.com/patterns/parchment.png');
+      color: #fdf5d9;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 2.5rem;
+      color: #d4af37;
+      text-shadow: 0 0 15px #ffcc00;
+      border-bottom: 2px solid #d4af37;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.75);
+      border: 2px solid #d4af37;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    }
+
+    h2 {
+      text-align: center;
+      color: #ffcc00;
+      font-family: 'Cinzel Decorative', cursive;
+      margin-bottom: 1rem;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+      max-width: 600px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      border-top: 2px solid #d4af37;
+      color: #c9a646;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>Hogwarts Student Marks</header>
+  <div class="container">
+    <h2>Subject-wise Marks</h2>
+    <canvas id="marksChart"></canvas>
+  </div>
+  <footer>
+    Mischief Managed ✨ | Hogwarts School of Witchcraft and Wizardry
+  </footer>
+
+  <script>
+    const ctx = document.getElementById('marksChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'polarArea',
+      data: {
+        labels: ['Physics', 'Mathematics I', 'Calculus', 'Chemistry', 'Botany', 'Anatomy'],
+        datasets: [{
+          label: 'Marks',
+          data: [78, 92, 85, 88, 76, 81], // Example marks
+          backgroundColor: [
+            'rgba(212, 175, 55, 0.7)', // Gold
+            'rgba(128, 0, 32, 0.7)',   // Gryffindor red
+            'rgba(0, 100, 0, 0.7)',    // Slytherin green
+            'rgba(25, 25, 112, 0.7)',  // Ravenclaw blue
+            'rgba(218, 165, 32, 0.7)', // Hufflepuff yellow
+            'rgba(139, 69, 19, 0.7)'   // Old parchment brown
+          ],
+          borderColor: [
+            'gold',
+            'darkred',
+            'green',
+            'navy',
+            'goldenrod',
+            'saddlebrown'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#fdf5d9',
+              font: {
+                family: 'Spectral SC',
+                size: 14
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#2e2e2e',
+            titleColor: '#ffcc00',
+            bodyColor: '#fdf5d9'
+          }
+        },
+        scales: {
+          r: {
+            angleLines: {
+              color: 'rgba(255, 215, 0, 0.3)'
+            },
+            grid: {
+              color: 'rgba(255, 215, 0, 0.2)'
+            },
+            ticks: {
+              color: '#fdf5d9',
+              font: { family: 'Spectral SC' }
+            },
+            pointLabels: {
+              color: '#ffcc00',
+              font: {
+                family: 'Cinzel Decorative',
+                size: 14
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

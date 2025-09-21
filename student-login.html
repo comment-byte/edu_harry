@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cinzel Decorative', serif;
+            margin: 0;
+            padding: 0;
+            background: url('hogwarts-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form {
+            background: rgba(0,0,0,0.7);
+            padding: 40px;
+            border-radius: 15px;
+            color: #FFD700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            width: 350px;
+        }
+
+        h2 { text-align: center; margin-bottom: 30px; }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            background-color: #3b1e00;
+            color: #FFD700;
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover { background-color: #1a0d00; }
+        .message { margin-top: 15px; text-align: center; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="login-form">
+        <h2>Student Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="loginBtn">Login</button>
+        <div class="message" id="msg"></div>
+    <p style="text-align:center; margin-top:10px; color:#FFD700;">
+        Don't have an account? <a href="student-signup.html" style="color:#00BFFF;">Sign Up</a>
+    </p>
+</div>
+    <script>
+        const loginBtn = document.getElementById('loginBtn');
+        const msg = document.getElementById('msg');
+
+        loginBtn.addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('http://localhost:5000/student/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if(response.ok){
+                msg.style.color = '#00FF00';
+                msg.innerText = 'Login Successful! Redirecting...';
+                setTimeout(()=>{ window.location.href = 'student_dashboard.html'; }, 1000);
+            } else {
+                msg.style.color = '#FF3333';
+                msg.innerText = data.error;
+            }
+        });
+    </script>
+</body>
+</html>
